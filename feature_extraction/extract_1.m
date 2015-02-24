@@ -24,6 +24,14 @@ avg_speed = mean(speed);
 max_speed = max(D);
 min_speed = min(D);
 
+% periods of very fast or very slow
+fast_spd_th = 20;
+slow_spd_th = 4;
+fast = D > fast_spd_th;
+slow = D < slow_spd_th;
+time_speeding = sum(fast);
+time_slowly = sum(slow);
+
 % stationary periods
 stationary = stops; %/ 3600 % in hrs
 percent_stationary = stops / time; %*100%
@@ -41,12 +49,32 @@ max_dec = max(dec);
 min_dec = min(dec);
 avg_dec = mean(dec);
 
+%% plot graphs
+
 % plot speed and acceleration over time
-speed = D ./ m;
 plot(speed);
 hold on;
 plot(grad);
 hold off;
+
+% plot trip path
+figure
+plot(data(:,1), data(:,2))
+hold on
+title(['Driver ' num2str(driver_num) ' ~ Trip ' num2str(trip_num)]);
+xlabel('X');
+ylabel('Y');
+
+% highlight significant speeds (or slow speeds) on trip path
+plot(data(fast,1), data(fast,2), 'x');
+plot(data(slow,1), data(slow,2), '+');
+
+hold off;
+
+
+
+
+
 
 
 
