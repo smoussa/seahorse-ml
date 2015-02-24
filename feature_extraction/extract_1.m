@@ -12,17 +12,17 @@ stops = 0;
 
 D = zeros(time, 1);
 for i = 2:time
-    diffs(i-1) = sqrt(sum((data(i,:) - data(i-1,:)) .^ 2));
+    D(i-1) = sqrt(sum((data(i,:) - data(i-1,:)) .^ 2));
 end
 
 % m/s to mph
 m = 2.2369362920544;
-speed = diffs ./ m;
+speed = D ./ m;
 
 % speed
 avg_speed = mean(speed);
-max_speed = max(diffs);
-min_speed = min(diffs);
+max_speed = max(D);
+min_speed = min(D);
 
 % stationary periods
 stationary = stops; %/ 3600 % in hrs
@@ -42,7 +42,7 @@ min_dec = min(dec);
 avg_dec = mean(dec);
 
 % plot speed and acceleration over time
-speed = diffs ./ m;
+speed = D ./ m;
 plot(speed);
 hold on;
 plot(grad);
