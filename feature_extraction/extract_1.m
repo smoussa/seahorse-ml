@@ -1,6 +1,6 @@
 %% load single driver and trip for visualisation
 driver_num = 100;
-trip_num = 25;
+trip_num = 11;
 data = csvread(['sample_data/' num2str(driver_num) ...
     '/' num2str(trip_num) '.csv'], 1, 0);
 
@@ -31,6 +31,8 @@ fast = D > fast_spd_th;
 slow = D < slow_spd_th;
 time_speeding = sum(fast);
 time_slowly = sum(slow);
+percent_fast = time_speeding / time;
+percent_slow = time_slowly / time;
 
 % stationary periods
 stationary = stops; %/ 3600 % in hrs
@@ -66,8 +68,8 @@ xlabel('X');
 ylabel('Y');
 
 % highlight significant speeds (or slow speeds) on trip path
-plot(data(fast,1), data(fast,2), 'x');
-plot(data(slow,1), data(slow,2), '+');
+plot(data(fast,1), data(fast,2), 'o');
+plot(data(slow,1), data(slow,2), 'o');
 
 hold off;
 
