@@ -81,19 +81,23 @@ hold off;
 %% export to csv
 % FEATURES:
 % [ driver, time, avg_speed, max_speed, min_speed, time_fast,
-% time_slow, percent_fast, precent_slow, stops, percent_stop, avg_acc,
+% time_slow, percent_fast, percent_slow, stops, percent_stop, avg_acc,
 % max_acc, min_acc, avg_dec, max_dec, min_dec ]
+
+header = ['driver,time,avg_speed,max_speed,min_speed,time_fast,' ...
+    'time_slow,percent_fast,percent_slow,stops,percent_stop,' ...
+    'avg_acc,max_acc,min_acc,avg_dec,max_dec,min_dec'];
 
 features = [driver_num time avg_speed max_speed min_speed time_fast ...
     time_slow percent_fast percent_slow stops percent_stop avg_acc ...
     max_acc min_acc avg_dec max_dec min_dec];
 
-dlmwrite(['feature_data/' num2str(driver_num) '.csv'], ...
-    ['driver,time,avg_speed,max_speed,min_speed,time_fast,' ...
-    'time_slow, percent_fast, precent_slow, stops, percent_stop,' ...
-    'avg_acc, max_acc, min_acc, avg_dec, max_dec, min_dec']);
-dlmwrite(['feature_data/' num2str(driver_num) '.csv'], features, ...
-    '-append');
+fname = ['feature_data/' num2str(driver_num) '.csv'];
+
+fid = fopen(fname, 'w+');
+fprintf(fid, '%s\n', header);
+fclose(fid);
+dlmwrite(fname, features, '-append');
 
 
 

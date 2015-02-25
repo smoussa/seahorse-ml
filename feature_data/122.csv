@@ -1,2 +1,2 @@
-",d,r,i,v,e,r,",,,",t,i,m,e,",,,a,v,g,_,s,p,e,e,d,,,m,a,x,_,s,p,e,e,d,,,m,i,n,_,s,p,e,e,d,,,t,i,m,e,_,f,a,s,t,,,t,i,m,e,_,s,l,o,w,,, ,p,e,r,c,e,n,t,_,f,a,s,t,,, ,p,r,e,c,e,n,t,_,s,l,o,w,,, ,s,t,o,p,s,,, ,p,e,r,c,e,n,t,_,s,t,o,p,,,a,v,g,_,a,c,c,,, ,m,a,x,_,a,c,c,,, ,m,i,n,_,a,c,c,,, ,a,v,g,_,d,e,c,,, ,m,a,x,_,d,e,c,,, ,m,i,n,_,d,e,c
+driver,time,avg_speed,max_speed,min_speed,time_fast,time_slow,percent_fast,percent_slow,stops,percent_stop,avg_acc,max_acc,min_acc,avg_dec,max_dec,min_dec
 122,1104,11.67,23.816,0,180,348,0.16304,0.31522,272,0.24638,0.19937,2.2012,0,0.20747,18.085,0
