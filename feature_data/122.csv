@@ -1,2 +1,0 @@
-driver,time,avg_speed,max_speed,min_speed,time_fast,time_slow,percent_fast,percent_slow,stops,percent_stop,avg_acc,max_acc,min_acc,avg_dec,max_dec,min_dec
-122,1104,11.67,23.816,0,180,348,0.16304,0.31522,272,0.24638,0.19937,2.2012,0,0.20747,18.085,0

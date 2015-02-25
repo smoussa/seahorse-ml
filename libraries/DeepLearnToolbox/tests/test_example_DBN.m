@@ -8,7 +8,7 @@ test_y  = double(test_y);
 
 %%  ex1 train a 100 hidden unit RBM and visualize its weights
 rand('state',0)
-dbn.sizes = [100];
+dbn.sizes = [200];
 opts.numepochs =   1;
 opts.batchsize = 100;
 opts.momentum  =   0;

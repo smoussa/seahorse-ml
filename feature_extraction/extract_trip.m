@@ -1,7 +1,7 @@
 %% load single driver and trip for visualisation
 
-driver_num = 122;
-trip_num = 24;
+function extract_trip(fname, driver_num, trip_num)
+
 data = csvread(['sample_data/' num2str(driver_num) ...
     '/' num2str(trip_num) '.csv'], 1, 0);
 
@@ -36,13 +36,13 @@ percent_fast = time_fast / time;
 percent_slow = time_slow / time;
 
 % stationary periods
-stationary = D < 1;
+stationary = D < 0.5;
 stops = sum(stationary); %/ 3600 % in hrs
 percent_stop = stops / time; %*100%
 
 % acceleration
 grad = gradient(speed);
-acc = (grad > 0) .* grad;
+acc = abs((grad > 0) .* grad);
 max_acc = max(acc);
 min_acc = min(acc);
 avg_acc = mean(acc);
@@ -57,58 +57,31 @@ avg_dec = mean(dec);
 %% plot graphs
 
 % plot speed and acceleration over time
-plot(speed);
-hold on;
-plot(grad);
-hold off;
-
-% plot trip path
-figure
-plot(data(:,1), data(:,2))
-hold on
-title(['Driver ' num2str(driver_num) ' ~ Trip ' num2str(trip_num)]);
-xlabel('X');
-ylabel('Y');
-
-% highlight significant speeds (or slow speeds) on trip path
-plot(data(fast,1), data(fast,2), 'o');
-plot(data(slow,1), data(slow,2), 'o');
-plot(data(stationary,1), data(stationary,2), 'ko');
-
-hold off;
-
+% plot(speed);
+% hold on;
+% plot(grad);
+% hold off;
+% 
+% % plot trip path
+% figure
+% plot(data(:,1), data(:,2))
+% hold on
+% title(['Driver ' num2str(driver_num) ' ~ Trip ' num2str(trip_num)]);
+% xlabel('X');
+% ylabel('Y');
+% 
+% % highlight significant speeds (or slow speeds) on trip path
+% plot(data(fast,1), data(fast,2), 'o');
+% plot(data(slow,1), data(slow,2), 'o');
+% plot(data(stationary,1), data(stationary,2), 'ko');
+% 
+% hold off;
 
 %% export to csv
-% FEATURES:
-% [ driver, time, avg_speed, max_speed, min_speed, time_fast,
-% time_slow, percent_fast, percent_slow, stops, percent_stop, avg_acc,
-% max_acc, min_acc, avg_dec, max_dec, min_dec ]
 
-header = ['driver,time,avg_speed,max_speed,min_speed,time_fast,' ...
-    'time_slow,percent_fast,percent_slow,stops,percent_stop,' ...
-    'avg_acc,max_acc,min_acc,avg_dec,max_dec,min_dec'];
-
-features = [driver_num time avg_speed max_speed min_speed time_fast ...
+features = [time avg_speed max_speed min_speed time_fast ...
     time_slow percent_fast percent_slow stops percent_stop avg_acc ...
     max_acc min_acc avg_dec max_dec min_dec];
-
-fname = ['feature_data/' num2str(driver_num) '.csv'];
-
-fid = fopen(fname, 'w+');
-fprintf(fid, '%s\n', header);
-fclose(fid);
 dlmwrite(fname, features, '-append');
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+end
