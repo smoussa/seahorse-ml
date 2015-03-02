@@ -19,7 +19,7 @@ for i = 1:size(data,2)
 end
 train_x = data;
 
-dbn.sizes = [25];
+dbn.sizes = [10 10 3];
 opts.numepochs =   1;
 opts.batchsize = 20;
 opts.momentum  =   0;
@@ -39,7 +39,12 @@ test_data = csvread(['feature_data/' num2str(test_driver) '.csv'], 1, 0);
 nn = nntrain(nn, train_x, ones(length(train_x), 1), opts);
 
 % nnpredict(nn, train_x)
-nnpredict(nn, test_data);
+probs = zeros(200,10);
+for i = 1:10
+    [probs(:,i), class(:,i)] = nnpredict(nn, train_x);
+end
+
+plot(mean(probs,2), 'o')
 
 
 
