@@ -1,7 +1,7 @@
 
 % load single driver and trip for visualisation
 driver_num = 100;
-trip_num = 2;
+trip_num = 65;
 data = csvread(['sample_data/' num2str(driver_num) ...
     '/' num2str(trip_num) '.csv'], 1, 0);
 

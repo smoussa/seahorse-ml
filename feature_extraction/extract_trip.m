@@ -61,27 +61,27 @@ avg_dec = mean(dec);
 % hold on;
 % plot(grad);
 % hold off;
-% 
-% % plot trip path
-% figure
-% plot(data(:,1), data(:,2))
-% hold on
-% title(['Driver ' num2str(driver_num) ' ~ Trip ' num2str(trip_num)]);
-% xlabel('X');
-% ylabel('Y');
-% 
-% % highlight significant speeds (or slow speeds) on trip path
-% plot(data(fast,1), data(fast,2), 'o');
-% plot(data(slow,1), data(slow,2), 'o');
-% plot(data(stationary,1), data(stationary,2), 'ko');
-% 
-% hold off;
+
+% plot trip path
+figure
+plot(data(:,1), data(:,2))
+hold on
+title(['Driver ' num2str(driver_num) ' ~ Trip ' num2str(trip_num)]);
+xlabel('X');
+ylabel('Y');
+
+% highlight significant speeds (or slow speeds) on trip path
+plot(data(fast,1), data(fast,2), 'o');
+plot(data(slow,1), data(slow,2), 'o');
+plot(data(stationary,1), data(stationary,2), 'ko');
+
+hold off;
 
 %% export to csv
 
-features = [time avg_speed max_speed min_speed time_fast ...
-    time_slow percent_fast percent_slow stops percent_stop avg_acc ...
-    max_acc min_acc avg_dec max_dec min_dec];
-dlmwrite(fname, features, '-append');
+% features = [time avg_speed max_speed min_speed time_fast ...
+%     time_slow percent_fast percent_slow stops percent_stop avg_acc ...
+%     max_acc min_acc avg_dec max_dec min_dec];
+% dlmwrite(fname, features, '-append');
 
 end
