@@ -7,7 +7,7 @@ header = ['time,avg_speed,max_speed,min_speed,time_fast,' ...
     'time_slow,percent_fast,percent_slow,stops,percent_stop,' ...
     'avg_acc,max_acc,min_acc,avg_dec,max_dec,min_dec'];
 
-for d = 100:100
+for d = 100:110
     
     fname = ['feature_data/' num2str(d) '.csv'];
     fid = fopen(fname, 'w+');
