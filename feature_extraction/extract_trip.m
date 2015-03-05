@@ -26,7 +26,7 @@ max_speed = max(speed);
 min_speed = min(speed);
 
 % periods of very fast or very slow
-fast_spd_th = 20;
+fast_spd_th = 25;
 slow_spd_th = 4;
 fast = D > fast_spd_th;
 slow = D < slow_spd_th;
