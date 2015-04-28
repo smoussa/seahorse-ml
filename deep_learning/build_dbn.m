@@ -6,8 +6,8 @@ function [extremes] = build_dbn(driver_num, dbn, opts)
 	n = length(raw);
 
 	% apply pca
-	% data = apply_pca(raw);
-	data = raw;
+	data = apply_pca(raw);
+	% data = raw;
 
 	% normalise between 0 and 1 (for deep learning toolbox)
 	for i = 1:size(data,2)
