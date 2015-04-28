@@ -10,14 +10,14 @@ format long
 
 % initialise parameters of dbn
 dbn.sizes = [250 250 250];
-opts.numepochs = 10;
+opts.numepochs = 5;
 opts.batchsize = 50;    % large batches are more strict
-opts.momentum  = 0;
+opts.momentum  = 0.2;
 opts.alpha     = 1;
 
 driver_num = 105;
 
-
+timestart = tic;
 
 
 
@@ -25,21 +25,18 @@ driver_num = 105;
 
 
 % frequency of commonly false trips (SERIAL)
-% timestart = tic;
 % F = zeros(200,1);
 % iterations = 30;
 % for i = 1:iterations
 % 	extremes = apply_dbn(driver_num, dbn, opts);
 % 	F(extremes) = F(extremes) + 1;
 % end
-% toc(timestart)
 
 
 
 
 
 % frequency of commonly false trips (PARALLEL)
-timestart = tic;
 F = zeros(200,1);
 iterations = 30;
 W = cell(iterations,1);
@@ -47,19 +44,10 @@ parfor i = 1:iterations
 	extremes = apply_dbn(driver_num, dbn, opts);
 	W{i} = extremes;
 end
-
-W
-toc(timestart)
-
-% for w = 1:size(W,1)
-
-% end
-
-
-
-
-
-
+% sum up workers' results
+for i = 1:size(W,1)
+	F(W{i}) = F(W{i}) + 1;
+end
 
 
 
@@ -68,12 +56,12 @@ toc(timestart)
 
 
 % find trips that come up false at least f times;
-% f = 20;
-% common = find(F >= f);
-% [common F(common)]
+f = 20;
+common = find(F >= f);
+[common F(common)]
 
-% disp(['Found '  num2str(numel(common)) ' frequently false trips'])
-% toc;
+disp(['Found '  num2str(numel(common)) ' frequently false trips'])
+toc(timestart)
 
 % plot
 % s = 6;
