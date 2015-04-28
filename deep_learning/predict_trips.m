@@ -2,6 +2,12 @@ close all
 clear all
 format long
 
+%{
+	HOW TO RUN:
+	(1) Add this directory and libraries directory to MATLAB path
+	(2) run this file.
+%}
+
 % initialise parameters of dbn
 dbn.sizes = [250 250 250];
 opts.numepochs = 5;
@@ -12,6 +18,7 @@ opts.alpha     = 1;
 driver_num = 105;
 
 % frequency of commonly false trips
+tic;
 F = zeros(200,1);
 for i = 1:30
 	extremes = apply_dbn(driver_num, dbn, opts);
@@ -24,6 +31,7 @@ common = find(F >= f);
 [common F(common)]
 
 disp(['Found '  num2str(numel(common)) ' frequently false trips'])
+toc;
 
 % plot
 s = 6;
