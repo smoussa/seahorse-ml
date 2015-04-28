@@ -1,0 +1,5 @@
+
+% extract all data from zip file
+% use extract_all to get feature data csvs
+% for each driver, predict_trips
+% save in format [num2str(driver_num) '_' num2str(trip_num) ',' 1]

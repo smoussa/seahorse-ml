@@ -1,4 +1,4 @@
-function [extremes] = build_dbn(driver_num, dbn, opts)
+function [extremes] = apply_dbn(driver_num, dbn, opts)
 
 	% fetch driver data
 	src = ['./feature_data/' num2str(driver_num) '.csv']
@@ -6,8 +6,8 @@ function [extremes] = build_dbn(driver_num, dbn, opts)
 	n = length(raw);
 
 	% apply pca
-	% data = apply_pca(raw);
-	data = raw;
+	data = apply_pca(raw);
+	% data = raw;
 
 	% normalise between 0 and 1 (for deep learning toolbox)
 	for i = 1:size(data,2)
@@ -37,7 +37,9 @@ function [extremes] = build_dbn(driver_num, dbn, opts)
 	% predict
 	probs = nnpredict(nn, train_x);
 	norm_trips = abs((probs - mean(probs)) / std(probs));
-	num_extremes = length(find(norm_trips > 1))
-	extremes = find(norm_trips > 1)
+
+	% find trips more than 1 standard deviation away from mean
+	num_extremes = length(find(norm_trips > 1));
+	extremes = find(norm_trips > 1);
 
 end
