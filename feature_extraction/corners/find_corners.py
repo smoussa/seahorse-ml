@@ -45,32 +45,36 @@ def find_corners(velocity, dist=None):
         dist = np.absolute(v_complex)
     res = []
     i = 0
-    while i < len(velocity):
-        minires = [i]
-        start_vec = velocity[i]
-        prev_corner_angle = 0
-        currdist = dist[i]
-        if dist[i] < 2:
-            #if the distance from last is small it's probably noise
-            i+=1
-            continue
-        for j, (v, d) in enumerate(zip(velocity[i+1:], dist[i+1:])):
-            if d < 2:
+    while i < len(velocity) - 1:
+        if angle_between(velocity[i], velocity[i+1]) > np.radians(5):
+            minires = [i]
+            start_vec = velocity[i]
+            prev_corner_angle = 0
+            currdist = dist[i]
+            if dist[i] < 1:
                 #if the distance from last is small it's probably noise
-                v = velocity[i+j-1]
-            minires.append(i+j)
-            currdist += d
-            corner_angle = angle_between(start_vec, v)
-            if currdist > 80 or corner_angle < prev_corner_angle + np.radians(1):
-                if corner_angle > np.radians(45):
-                    i = i + j
-                    res.append(minires)
-                    break
-                else:
-                    break
-            prev_corner_angle = corner_angle
+                i+=1
+                continue
+            for j, (v, d) in enumerate(zip(velocity[i+1:], dist[i+1:])):
+                if d < 1:
+                    #if the distance from last is small it's probably noise
+                    continue
+                minires.append(i+j)
+                currdist += d
+                corner_angle = angle_between(start_vec, v)
+                print(np.degrees(corner_angle))
+                if currdist > 70 or corner_angle <= prev_corner_angle + np.radians(1):
+                    if corner_angle > np.radians(45):
+                        i = i + j
+                        res.append(minires)
+                        break
+                    else:
+                        break
+                prev_corner_angle = corner_angle
+            print()
         i += 1
     return res
+
 
 def main():
     trips = read_trips(sys.argv[1])
@@ -81,7 +85,7 @@ def main():
     speeds = [np.absolute(v) for v in v_complex]
     n = random.randint(0, 199)
     n = 29
-    print("Trip number is:",n)
+    print("Trip number is:", n)
     corners = find_corners(velocities[n])
     trip = trips[n]
     plt.scatter(trips[n][:,0], trips[n][:,1])#, c=speeds[n])
