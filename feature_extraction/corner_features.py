@@ -3,38 +3,13 @@ import scipy as sp
 from read_data import read_trips
 import matplotlib.pyplot as plt
 import matplotlib
+from acceleration_features import compute_velocities, compute_scalar
 import random
 import sys
 
 def angle_between(v1, v2):
     cos_sim = np.dot(v1, v2)/(np.linalg.norm(v1) * np.linalg.norm(v2))
     return np.arccos(cos_sim)
-
-def grad2d(arr):
-    return np.vstack((np.gradient(arr[:,0]), np.gradient(arr[:,1]))).T
-
-def smooth_low(arr):
-    arr = np.array(arr, copy=True)
-    for i, a in enumerate(arr):
-        if np.dot(a, a) < 1:
-            arr[i] = np.array([0, 0])
-    return arr
-
-def smooth(arr, n=75):
-    xs = arr[:,0]
-    ys = arr[:,1]
-    xdft = np.fft.rfft(xs)
-    ydft = np.fft.rfft(ys)
-    xdft[n:] = [0]
-    ydft[n:] = [0]
-    xsm = np.fft.irfft(xdft)
-    ysm = np.fft.irfft(ydft)
-    return np.vstack((xsm, ysm)).T
-
-
-def compute_scalar(a):
-    a_complex = a[:,0] + a[:,1]*1j
-    return np.absolute(a_complex)
 
 def identify_corners(velocity, dist=None):
     """
@@ -92,8 +67,7 @@ def corners_features(velocity, dists=None):
 
 def main():
     trips = read_trips(sys.argv[1])
-    jag_velocities = [grad2d(trip) for trip in trips]
-    velocities = [smooth_low(smooth(v)) for v in jag_velocities]
+    velocities = [compute_velocities(trip) for trip in trips]
     speeds = [compute_scalar(v) for v in velocities]
     features = np.array([corners_features(v, s) for v, s in zip(velocities, speeds)])
     print(features)
