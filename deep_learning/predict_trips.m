@@ -12,7 +12,7 @@ format long
 dbn.sizes = [250 250 250];
 opts.numepochs = 5;
 opts.batchsize = 50;    % large batches are more strict
-opts.momentum  = 0.2;
+opts.momentum  = 0;
 opts.alpha     = 1;
 
 driver_num = 105;
