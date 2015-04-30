@@ -3,7 +3,7 @@ import scipy as sp
 from read_data import read_trips
 import matplotlib.pyplot as plt
 import matplotlib
-from acceleration_features import compute_velocities, compute_scalar
+from acceleration_features import compute_velocity, compute_scalar
 import random
 import sys
 
@@ -59,15 +59,15 @@ def corners_features(velocity, dists=None):
     corners, angles = identify_corners(velocity, dists)
     if len(corners) == 0:
         return np.array([0., 0., 0., 0., 0.])
-    corner_speeds = [sum(dists[range(c1, c2+1)])/(c1 - c2) for c1, c2 in corners]
+    corner_speeds = [np.mean(dists[range(c1, c2+1)]) for c1, c2 in corners]
     max_speed = np.max(corner_speeds)
     min_speed = np.min(corner_speeds)
     mean_speed = np.mean(corner_speeds)
-    return np.array([float(len(corners)), np.mean(angles), max_speed, min_speed, mean_speed])
+    return np.array([float(len(corners))/np.sum(dists), np.mean(angles), max_speed, min_speed, mean_speed])
 
 def main():
     trips = read_trips(sys.argv[1])
-    velocities = [compute_velocities(trip) for trip in trips]
+    velocities = [compute_velocity(trip) for trip in trips]
     speeds = [compute_scalar(v) for v in velocities]
     features = np.array([corners_features(v, s) for v, s in zip(velocities, speeds)])
     print(features)
