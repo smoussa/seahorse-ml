@@ -1,14 +1,7 @@
-function extract_trip(fname, driver_num, trip_num)
+function [data, fast, slow, stationary] = extract_features(driver_num, trip_num)
 
-	% export to csv
-	% NOT COMPLETE, ONLY COPY
-
-	path =  ['drivers/' num2str(driver_num) ...
-    '/' num2str(trip_num) '.csv'];
-
-	if exist(path)
-	
-	data = csvread(path, 1, 0);
+	data = csvread(['sample_data/' num2str(driver_num) ...
+    '/' num2str(trip_num) '.csv'], 1, 0);
 
 
 	%% extract features
@@ -58,10 +51,4 @@ function extract_trip(fname, driver_num, trip_num)
 	min_dec = min(dec);
 	avg_dec = mean(dec);
 
-	features = [time avg_speed max_speed min_speed time_fast ...
-	    time_slow percent_fast percent_slow stops percent_stop avg_acc ...
-	    max_acc min_acc avg_dec max_dec min_dec];
-	dlmwrite(fname, features, '-append');
-
-	end
 end

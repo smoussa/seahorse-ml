@@ -1,1 +1,6 @@
+drivers
+drivers.zip
 sample_data
+feature_data/*.csv
+.~lock*
+submission_file.csv
