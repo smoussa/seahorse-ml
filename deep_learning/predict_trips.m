@@ -12,10 +12,10 @@ format long
 dbn.sizes = [250 250 250];
 opts.numepochs = 5;
 opts.batchsize = 50;    % large batches are more strict
-opts.momentum  = 0.2;
+opts.momentum  = 0;
 opts.alpha     = 1;
 
-driver_num = 105;
+driver_num = 109;
 
 timestart = tic;
 
@@ -38,7 +38,7 @@ timestart = tic;
 
 % frequency of commonly false trips (PARALLEL)
 F = zeros(200,1);
-iterations = 30;
+iterations = 100;
 W = cell(iterations,1);
 parfor i = 1:iterations
 	extremes = apply_dbn(driver_num, dbn, opts);
@@ -56,7 +56,7 @@ end
 
 
 % find trips that come up false at least f times;
-f = 20;
+f = 50;
 common = find(F >= f);
 [common F(common)]
 
