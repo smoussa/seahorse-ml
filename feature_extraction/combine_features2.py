@@ -35,18 +35,13 @@ def main():
     until_driver = sys.argv[3]
     trips = read_trips(location+"1")
     fmatrix = feature_matrix(trips)
-    n_rows, n_comps = fmatrix.shape
-    train_fmatrix = fmatrix[:int(len(fmatrix)/2)]
-    train_targets = np.ones(len(train_fmatrix))
-    test_fmatrix = fmatrix[int(len(fmatrix)/2):]
-    test_targets = np.ones(len(test_fmatrix))
     targets = np.ones(len(fmatrix))
     for i in range(1, until_driver + 1):
         try:
             trips = read_trips(location + str(i))
             fm = feature_matrix(trips)
             fmatrix = np.vstack((fmatrix, fm))
-            np.savetxt(str(i)+'.csv', fmatrix,  header='', delimiter=',', fmt="%10.5f")
+            np.savetxt(write_location + str(i)+'.csv', fmatrix,  header='', delimiter=',', fmt="%10.5f")
         except IOError:
             print("error tengaleng")
     
