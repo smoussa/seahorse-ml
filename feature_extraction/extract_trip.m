@@ -3,8 +3,12 @@ function extract_trip(fname, driver_num, trip_num)
 	% export to csv
 	% NOT COMPLETE, ONLY COPY
 
-	data = csvread(['sample_data/' num2str(driver_num) ...
-    '/' num2str(trip_num) '.csv'], 1, 0);
+	path =  ['drivers/' num2str(driver_num) ...
+    '/' num2str(trip_num) '.csv'];
+
+	if exist(path)
+	
+	data = csvread(path, 1, 0);
 
 
 	%% extract features
@@ -59,4 +63,5 @@ function extract_trip(fname, driver_num, trip_num)
 	    max_acc min_acc avg_dec max_dec min_dec];
 	dlmwrite(fname, features, '-append');
 
+	end
 end

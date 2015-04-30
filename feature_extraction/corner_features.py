@@ -1,3 +1,4 @@
+from itertools import chain
 import numpy as np
 import scipy as sp
 from read_data import read_trips
@@ -58,19 +59,28 @@ def corners_features(velocity, dists=None):
         dists = compute_scalar(velocity)
     corners, angles = identify_corners(velocity, dists)
     if len(corners) == 0:
-        return np.array([0., 0., 0., 0., 0.])
-    corner_speeds = [np.mean(dists[range(c1, c2+1)]) for c1, c2 in corners]
-    max_speed = np.max(corner_speeds)
-    min_speed = np.min(corner_speeds)
-    mean_speed = np.mean(corner_speeds)
-    return np.array([float(len(corners))/np.sum(dists), np.mean(angles), max_speed, min_speed, mean_speed])
+        return np.zeros(14)
+    corner_speeds = [dists[range(c1, c2+1)] for c1, c2 in corners]
+    corner_speeds_contig = list(chain(*corner_speeds))
+    import matplotlib.pyplot as plt
+    bins = np.linspace(0, 14, 10)
+    corner_speed_hist, bs = np.histogram(corner_speeds_contig, bins=bins)
+    mean_corner_speeds = [np.mean(cs) for cs in corner_speeds]
+    max_speed = np.max(mean_corner_speeds)
+    min_speed = np.min(mean_corner_speeds)
+    mean_speed = np.mean(mean_corner_speeds)
+    res = np.hstack((
+        np.array([float(len(corners))/np.sum(dists), np.mean(angles), max_speed, min_speed, mean_speed]),
+        corner_speed_hist
+    ))
+    return res
 
 def main():
     trips = read_trips(sys.argv[1])
     velocities = [compute_velocity(trip) for trip in trips]
     speeds = [compute_scalar(v) for v in velocities]
     features = np.array([corners_features(v, s) for v, s in zip(velocities, speeds)])
-    print(features)
+    #print(features)
     n = random.randint(0, 199)
     print("Trip number is:", n)
     (corners, angles) = identify_corners(velocities[n])
