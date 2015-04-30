@@ -39,19 +39,20 @@ def main():
     k = int(sys.argv[1])
     trips = read_trips(location+"1")
     fmatrix = feature_matrix(trips)
+    print(fmatrix)
     n_rows, n_comps = fmatrix.shape
     train_fmatrix = fmatrix[:int(len(fmatrix)/2)]
     train_targets = np.ones(len(train_fmatrix))
     test_fmatrix = fmatrix[int(len(fmatrix)/2):]
     test_targets = np.ones(len(test_fmatrix))
     targets = np.ones(len(fmatrix))
-    for i in range(k, k+1):
+    for i in range(k, k+20):
         try:
             trips = read_trips(location + str(i))
             fm = feature_matrix(trips)
             print(fm.shape, fmatrix.shape, n_comps)
-            train_fm = fm[:int(len(fmatrix)/2)]
-            test_fm = fm[int(len(fmatrix)/2):]
+            train_fm = fm[:5]
+            test_fm = fm[5:10]
             train_fmatrix = np.vstack((train_fmatrix, train_fm))
             test_fmatrix = np.vstack((test_fmatrix, test_fm))
             fmatrix = np.vstack((fmatrix, fm))
