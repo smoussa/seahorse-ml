@@ -22,7 +22,7 @@ fprintf(fid, '%s\n', 'driver_trip,prob');
 
 timestart = tic;
 
-for d = 100:101
+for d = 1:10
 
 	%{
 		Run DBN
@@ -38,7 +38,7 @@ for d = 100:101
 
 	% frequency of commonly false trips (PARALLEL)
 	F = zeros(200,1);
-	iterations = 4;
+	iterations = 50;
 	W = cell(iterations,1);
 	parfor i = 1:iterations
 		extremes = apply_dbn(d, dbn, opts);

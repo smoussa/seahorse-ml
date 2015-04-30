@@ -16,7 +16,7 @@ def feature_vector(trip):
     return np.hstack((corner_features, acc_features))
 
 def feature_matrix(trips, feature_vector=feature_vector):
-    p = Pool(3)
+    p = Pool(16)
     return np.array(p.map(feature_vector, trips))
 
 def feature_matrix2(trips, n=None):
