@@ -8,7 +8,10 @@
 
 import datetime
 import csv
-# from concurrent.futures import ThreadPoolExecutor
+import os
+from concurrent.futures import ThreadPoolExecutor
+from multiprocessing import Pool
+import functools
 
 import numpy as np
 import scipy as sp
@@ -22,7 +25,8 @@ from scipy.spatial.distance import euclidean as euclid
 import matplotlib.pyplot as plt
 # from mpl_toolkits.mplot3d import Axes3D
 
-samples_path = "sample_data/{}/{}.csv"
+samples_dir_path = "sample_data/{}/"
+samples_path = samples_dir_path+"{}.csv"
 # samples_path = "../sample_data/{}/{}.csv"
 features_header = ['total_dist', 'euclid_dist', 'long_trip', 'longest_strt', 'shortest_strt',
     'max_strt_spd', 'min_strt_spd']
@@ -34,17 +38,20 @@ def dist_features(data):
     total_dists = [np.sum(d) for d in dists]
     median_total = np.median(total_dists)
     long_trip = [1 if d > median_total else 0 for d in total_dists]
-    straights = [straights_features(data[i], dists[i], plot=True) for i in range(len(data))]
-    # with ThreadPoolExecutor(max_workers=3) as e:
-    #     straights = list(e.map(lambda i:straights_features(data[i], dists[i]), range(len(data))))
-    # straights = list(map(lambda i:straights_features(data[i], dists[i]), range(len(data))))
+    # straights = [straights_features(data[i], dists[i], plot=True) for i in range(len(data))]
+    # with ThreadPoolExecutor(max_workers=20) as e:
+    #     straights = list(e.map(f, range(len(data))))
+    pool = Pool(4)
+    straights = list(pool.map(func, zip(data, dists)))
     return format(total_dists, start_end_dists, long_trip, straights)
+def func(data_dist):
+    return straights_features(data_dist[0], data_dist[1])
 
 def format(t, se, l, ss):
     """total dists, start_end_dists, long_trips, straight features"""
     return [(t[i], se[i], l[i], ss[i][0], ss[i][1], ss[i][2], ss[i][3]) for i in range(len(t))]
 
-def straights_features(coords, dists, threshold=0.003, plot=False):
+def straights_features(coords, dists, threshold=0.01, plot=False):
     """Create features about straights, e.g. longest, shortest, max speed, min speed
     Args:
         coords: the coordinates of the points.
@@ -56,10 +63,11 @@ def straights_features(coords, dists, threshold=0.003, plot=False):
             straight)
     """
     straights = []
-    while not straights:
-        straights = identify_straights(coords, dists, threshold)
-        threshold += 0.001
-        print('No straights, new threshold: ' + str(threshold))
+    straights = identify_straights(coords, dists, threshold)
+    # while not straights:
+    #     straights = identify_straights(coords, dists, threshold)
+    #     threshold += 0.01
+    #     print('No straights, new threshold: ' + str(threshold))
     features = generate_straight_features(straights)
     if plot:
         plot_straight(coords, straights)
@@ -73,6 +81,8 @@ def plot_straight(coords, straights):
     plt.savefig(str(datetime.datetime.now())+".svg")
 
 def generate_straight_features(straights):
+    if not straights:
+        return (0,0,0,0)
     Inf = float("inf")
     longest, shortest, fastest, slowest = 0, Inf, 0, Inf
     for s in straights:
@@ -93,8 +103,10 @@ def identify_straights(coords, dists, threshold):
     """
     # min dist is 10% of total length
     min_straight = 50
-    calc_dist_diff = lambda start, end, dist_sum: dist_sum - euclid(start, end)
-    diff_below_threshold = lambda dist_diff, dist_sum: abs(dist_diff) < threshold * dist_sum
+    def calc_dist_diff(start, end, dist_sum):
+        return dist_sum - euclid(start, end)
+    def diff_below_threshold(dist_diff, dist_sum):
+        return abs(dist_diff) < threshold * dist_sum
     straights = {}
     end = 0
     for i in range(len(dists)):
@@ -111,24 +123,37 @@ def identify_straights(coords, dists, threshold):
 
 
 def read_data(driver):
-    return np.array([np.genfromtxt(samples_path.format(driver, trip), skip_header=1, delimiter=",") for trip in range(1, 201)])
+    for trip in range(1, 201):
+        path = samples_path.format(driver, trip)
+        if os.path.exists(path):
+            yield np.genfromtxt(path, skip_header=1, delimiter=",")
+        else:
+            print("Didn't find trip {} for {}".format(trip, driver))
+
+def read_all_data(drivers):
+    for driver in drivers:
+        if os.path.exists(samples_dir_path.format(driver)):
+            array = np.array(list(read_data(driver)))
+            if array.shape:
+                yield driver, array
+        else:
+            print("Skipping driver {}".format(driver))
+
+def generate_all_features(driver_data):
+    for i, d in driver_data:
+        print("Processing driver {}".format(i))
+        yield dist_features(d)
 
 def create_csv():
-    drivers = list(range(100, 101))
-    driver_data = [read_data(driver) for driver in drivers]
-    # for trip in range(0, 200):
-    #     data = driver_data[0]
-    #     coords = data[trip]
-    #     data_dt = [np.diff(d, axis=0) for d in data]
-    #     dists = [np.linalg.norm(d, axis=1) for d in data_dt][trip]
-    #     s = straights_features(coords, dists, 0.02)
-    #     print(s)
-    features = [dist_features(d[:10]) for d in driver_data]
-    # for driver, f in zip(drivers, features):
-    #     with open('distance'+str(driver)+'.csv', 'w') as csvfile:
-    #         writer = csv.writer(csvfile)
-    #         writer.writerow(features_header)
-    #         writer.writerows(f)
+    drivers = list(range(126, 127))
+    driver_data = list(read_all_data(drivers))
+    drivers = map(lambda x: x[0], driver_data)
+    features = list(generate_all_features(driver_data))
+    for driver, f in zip(drivers, features):
+        with open('feature_data/distances/distance'+str(driver)+'.csv', 'w') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(features_header)
+            writer.writerows(f)
 
 if __name__ == '__main__':
     create_csv()
