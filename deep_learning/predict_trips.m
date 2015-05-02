@@ -24,62 +24,66 @@ timestart = tic;
 
 for d = 120:130
 
-	%{
-		Run DBN
-	%}
+	srcpath = ['feature_data/' num2str(d) '.csv'];
+    if exist(srcpath)
 
-	% frequency of commonly false trips (SERIAL)
-	% F = zeros(200,1);
-	% iterations = 30;
-	% for i = 1:iterations
-	% 	extremes = apply_dbn(d, dbn, opts);
-	% 	F(extremes) = F(extremes) + 1;
-	% end
+		%{
+			Run DBN
+		%}
 
-	% frequency of commonly false trips (PARALLEL)
-	F = zeros(200,1);
-	iterations = 50;
-	W = cell(iterations,1);
-	parfor i = 1:iterations
-		extremes = apply_dbn(d, dbn, opts);
-		W{i} = extremes;
+		% frequency of commonly false trips (SERIAL)
+		% F = zeros(200,1);
+		% iterations = 30;
+		% for i = 1:iterations
+		% 	extremes = apply_dbn(d, dbn, opts);
+		% 	F(extremes) = F(extremes) + 1;
+		% end
+
+		% frequency of commonly false trips (PARALLEL)
+		F = zeros(200,1);
+		iterations = 50;
+		W = cell(iterations,1);
+		parfor i = 1:iterations
+			extremes = apply_dbn(d, dbn, opts);
+			W{i} = extremes;
+		end
+		% sum up workers' results
+		for i = 1:size(W,1)
+			F(W{i}) = F(W{i}) + 1;
+		end
+
+		
+
+
+
+
+		%{
+			Save trip data
+		%}
+
+		% find trips that come up false at least f times;
+		f = fix(iterations / 2);
+		falsy = (F >= f);
+		% [falsy F(falsy)]
+
+		disp(['Driver: ' num2str(d) ' -> Found '  num2str(numel(falsy)) ' false trips.'])
+
+		driver_num = num2str(d);
+		for t = 1:200
+			fprintf(fid, '%s\n', [driver_num '_' num2str(t) ',' num2str(falsy(t))]);
+		end
+		
+
+		%{
+			Plot
+		%}
+
+		% plot
+		% s = 6;
+		% true_trips = setdiff(1:200,falsy);
+		% view_trips(d, falsy(randperm(length(falsy),s)), true);  	% plot some false trips (Fig 1)
+		% view_trips(d, true_trips(randperm(length(true_trips),s)), true);	% plot some true trips (Fig 2)
 	end
-	% sum up workers' results
-	for i = 1:size(W,1)
-		F(W{i}) = F(W{i}) + 1;
-	end
-
-	
-
-
-
-
-	%{
-		Save trip data
-	%}
-
-	% find trips that come up false at least f times;
-	f = fix(iterations / 2);
-	falsy = (F >= f);
-	% [falsy F(falsy)]
-
-	disp(['Driver: ' num2str(d) ' -> Found '  num2str(numel(falsy)) ' false trips.'])
-
-	driver_num = num2str(d);
-	for t = 1:200
-		fprintf(fid, '%s\n', [driver_num '_' num2str(t) ',' num2str(falsy(t))]);
-	end
-	
-
-	%{
-		Plot
-	%}
-
-	% plot
-	% s = 6;
-	% true_trips = setdiff(1:200,falsy);
-	% view_trips(d, falsy(randperm(length(falsy),s)), true);  	% plot some false trips (Fig 1)
-	% view_trips(d, true_trips(randperm(length(true_trips),s)), true);	% plot some true trips (Fig 2)
 end
 
 toc(timestart)
