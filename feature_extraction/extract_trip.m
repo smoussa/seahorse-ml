@@ -3,8 +3,7 @@ function extract_trip(fname, driver_num, trip_num)
 	% export to csv
 	% NOT COMPLETE, ONLY COPY
 
-	srcpath =  ['drivers/' num2str(driver_num) ...
-    '/' num2str(trip_num) '.csv'];
+	srcpath =  ['drivers/' num2str(driver_num) '/' num2str(trip_num) '.csv'];
 
 	if exist(srcpath)
 	

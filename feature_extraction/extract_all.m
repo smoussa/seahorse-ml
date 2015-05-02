@@ -10,21 +10,28 @@ header = ['time,avg_speed,max_speed,min_speed,time_fast,' ...
 disp('Extracting all driver trips ...');
 
 tstart = tic;
+missing = 0;
 for d = 120:130
     
-    srcpath = ['feature_data/' num2str(d) '.csv'];
+    srcpath =  ['drivers/' num2str(d)];
     if exist(srcpath)
-        fid = fopen(srcpath, 'w+');
+
+        destpath = ['feature_data/' num2str(d) '.csv'];
+        fid = fopen(destpath, 'w+');
     	fprintf(fid, '%s\n', header);
     	fclose(fid);
 
     	parfor t = 1:200
-            extract_trip(srcpath, d,t);
+            extract_trip(destpath, d,t);
     	end
+    else
+        disp(['driver ' num2str(d) ' does not exist']);
+        missing = missing + 1;
     end
 
     disp(['Driver ' num2str(d) ' done.']);
 end
 
-disp('Finished. All drivers and features extracted.');
+disp('Finished. Drivers and features extracted.');
+disp([num2str(missing) ' driver(s) missing.']);
 toc(tstart)
