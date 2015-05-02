@@ -2,6 +2,8 @@ close all
 clear all
 format long
 
+setup_paths;
+
 %{
 	HOW TO RUN:
 	(1) Add this directory and libraries directory to MATLAB path
@@ -22,7 +24,7 @@ fprintf(fid, '%s\n', 'driver_trip,prob');
 
 timestart = tic;
 
-for d = 120:130
+for d = 1:3612
 
 	srcpath = ['feature_data/' num2str(d) '.csv'];
     if exist(srcpath)
@@ -61,16 +63,16 @@ for d = 120:130
 			Save trip data
 		%}
 
-		% find trips that come up false at least f times;
+		% find trips that belong to the driver;
 		f = fix(iterations / 2);
-		falsy = (F >= f);
-		% [falsy F(falsy)]
+		truthy = (F < f); % 1: true, 0: false
+		% [truthy F(truthy)]
 
-		disp(['Driver: ' num2str(d) ' -> Found '  num2str(numel(falsy)) ' false trips.'])
+		% disp(['Driver: ' num2str(d) ' -> Found '  num2str(sum(truthy)) '/200 true trips.'])
 
 		driver_num = num2str(d);
 		for t = 1:200
-			fprintf(fid, '%s\n', [driver_num '_' num2str(t) ',' num2str(falsy(t))]);
+			fprintf(fid, '%s\n', [driver_num '_' num2str(t) ',' num2str(truthy(t))]);
 		end
 		
 
@@ -80,8 +82,8 @@ for d = 120:130
 
 		% plot
 		% s = 6;
-		% true_trips = setdiff(1:200,falsy);
-		% view_trips(d, falsy(randperm(length(falsy),s)), true);  	% plot some false trips (Fig 1)
+		% true_trips = setdiff(1:200,truthy);
+		% view_trips(d, truthy(randperm(length(truthy),s)), true);  	% plot some false trips (Fig 1)
 		% view_trips(d, true_trips(randperm(length(true_trips),s)), true);	% plot some true trips (Fig 2)
 	end
 end
