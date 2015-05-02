@@ -11,7 +11,7 @@ disp('Extracting all driver trips ...');
 
 tstart = tic;
 missing = 0;
-for d = 120:130
+parfor d = 120:130
     
     srcpath =  ['drivers/' num2str(d)];
     if exist(srcpath)
@@ -21,15 +21,15 @@ for d = 120:130
     	fprintf(fid, '%s\n', header);
     	fclose(fid);
 
-    	parfor t = 1:200
+    	for t = 1:200
             extract_trip(destpath, d,t);
     	end
+
+        disp(['Driver ' num2str(d) ' done.']);
     else
         disp(['driver ' num2str(d) ' does not exist']);
         missing = missing + 1;
     end
-
-    disp(['Driver ' num2str(d) ' done.']);
 end
 
 disp('Finished. Drivers and features extracted.');
