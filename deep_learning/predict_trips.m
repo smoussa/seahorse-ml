@@ -9,6 +9,7 @@ setup_paths;
 	(1) Add this directory and libraries directory to MATLAB path
 	(2) Run extract_all.m to extract feature data
 	(2) Run predict_trips.m to predict on all extracted drivers
+	matlab -nodisplay -nodesktop -nosplash < deep_learning/predict_trips.m
 %}
 
 % initialise parameters of dbn
@@ -24,7 +25,11 @@ fprintf(fid, '%s\n', 'driver_trip,prob');
 
 timestart = tic;
 
-for d = 1:3612
+myCluster = parcluster('local');
+myCluster.NumWorkers = 24;
+gcp = myCluster;
+
+for d = 120:130 % 3612
 
 	srcpath = ['feature_data/' num2str(d) '.csv'];
     if exist(srcpath)
@@ -91,7 +96,7 @@ end
 toc(timestart)
 fclose(fid);
 
-
+exit;
 
 
 
