@@ -10,16 +10,16 @@ header = ['time,avg_speed,max_speed,min_speed,time_fast,' ...
 disp('Extracting all driver trips ...');
 
 tstart = tic;
-for d = 1:10
+for d = 120:130
     
-    fname = ['feature_data/' num2str(d) '.csv'];
-    fid = fopen(fname, 'w+');
-	if (fid > 0)
+    srcpath = ['feature_data/' num2str(d) '.csv'];
+    if exist(srcpath)
+        fid = fopen(srcpath, 'w+');
     	fprintf(fid, '%s\n', header);
     	fclose(fid);
 
     	parfor t = 1:200
-        	extract_trip(fname, d,t);
+            extract_trip(srcpath, d,t);
     	end
     end
 

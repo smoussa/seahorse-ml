@@ -22,7 +22,7 @@ fprintf(fid, '%s\n', 'driver_trip,prob');
 
 timestart = tic;
 
-for d = 1:10
+for d = 120:130
 
 	%{
 		Run DBN
