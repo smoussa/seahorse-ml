@@ -67,7 +67,7 @@ def main():
         trips = create_trip_list(os.path.join(outer_dir, direc))
         pvals = calc_confidence(trips) 
         for i, pval in enumerate(pvals):
-            print("{dnum}_{tnum},{pval:.10f}".format(dnum=direc, tnum=i, pval=pval))
+            print("{dnum}_{tnum},{pval:.10f}".format(dnum=direc, tnum=i+1, pval=pval))
 
 
 if __name__ == "__main__":

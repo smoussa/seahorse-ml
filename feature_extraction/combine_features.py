@@ -3,10 +3,13 @@ from corner_features import corners_features, angle_between, cos_between
 from acceleration_features import compute_velocity, compute_scalar, acceleration_features
 from read_data import read_trips
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.decomposition import FastICA
+from  sklearn.svm import SVC
 import sys
 from multiprocessing import Pool
 import matplotlib.pyplot as plt
@@ -43,11 +46,10 @@ def main():
     k = int(sys.argv[1])
     trips = read_trips(location+"1")
     fmatrix = feature_matrix(trips)
-    print(fmatrix)
     n_rows, n_comps = fmatrix.shape
-    train_fmatrix = fmatrix[:int(len(fmatrix)*0.8)]
+    train_fmatrix = fmatrix[:int(len(fmatrix)*0.9)]
     train_targets = np.ones(len(train_fmatrix))
-    test_fmatrix = fmatrix[int(len(fmatrix)*0.8):]
+    test_fmatrix = fmatrix[int(len(fmatrix)*0.9):]
     test_targets = np.ones(len(test_fmatrix))
     num_t_targets = len(test_targets)
     targets = np.ones(len(fmatrix))
@@ -55,8 +57,8 @@ def main():
         try:
             trips = read_trips(location + str(i))
             fm = feature_matrix(trips)
-            train_fm = fm[:8]
-            test_fm = fm[8:10]
+            train_fm = fm[:9]
+            test_fm = fm[9:10]
             train_fmatrix = np.vstack((train_fmatrix, train_fm))
             test_fmatrix = np.vstack((test_fmatrix, test_fm))
             fmatrix = np.vstack((fmatrix, fm))
@@ -67,18 +69,32 @@ def main():
             print(i)
         except IOError:
             print("error tengaleng")
-    rf = RandomForestClassifier()
-    rf.fit(train_fmatrix, train_targets)
-    pipeline = Pipeline([('scale', StandardScaler()), ('ICA', FastICA(n_components=3))])
-    transformed = pipeline.fit_transform(fmatrix)
-    fig = plt.figure()
-    #ax = fig.add_subplot(111, projection='3d')
-    #ax.scatter(transformed[:,0], transformed[:,1], transformed[:,2], c=targets, cmap=matplotlib.cm.binary)
-    #plt.show()
 
-    score = rf.score(test_fmatrix, test_targets)
+    pipeline = Pipeline([('scale', StandardScaler()), ('ICA', PCA(n_components=50))])
+    pipeline.fit(fmatrix)
+    train_trans = pipeline.transform(train_fmatrix)
+    test_trans = pipeline.transform(test_fmatrix)
+
     print("point teng", num_t_targets/len(test_targets))
-    print(score)
+    gb = GradientBoostingClassifier()
+    gb.fit(train_fmatrix, train_targets)
+    gb_score = gb.score(test_fmatrix, test_targets)
+    print("gb", gb_score)
+    dt = DecisionTreeClassifier()
+    dt.fit(train_fmatrix, train_targets)
+    dt_score = dt.score(test_fmatrix, test_targets)
+    print("dt", dt_score)
+    svc = SVC()
+    svc.fit(train_fmatrix, train_targets)
+    svc_score = svc.score(test_fmatrix, test_targets)
+    print("svc", svc_score)
+    rfs = [RandomForestClassifier(n_estimators=40) for i in range(20)]
+    scores = []
+    for i, rf in enumerate(rfs):
+        rf.fit(train_fmatrix, train_targets)
+        scores.append(rf.score(test_fmatrix, test_targets))
+        print(i, scores[i])
+    print("average", np.mean(scores))
 
 if __name__ == "__main__":
     main()

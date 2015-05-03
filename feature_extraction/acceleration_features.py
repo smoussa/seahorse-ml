@@ -79,6 +79,11 @@ def acceleration_features(velocity, angle_dt, cos_dt, speed=None):
     angle_hist, b = np.histogram(angle_dt_speed, bins=angle_bins)
     n_angle_hist = angle_hist/total_time
 
+    angle_dt_acc = scalar_acc*angle_dt
+    angle_bins = np.hstack((-np.inf, np.linspace(-50, 50, 20), np.inf))
+    acc_angle_hist, b = np.histogram(angle_dt_acc, bins=angle_bins)
+    n_acc_angle_hist = acc_angle_hist/total_time
+
     cos_dt_speed = speed * cos_dt
     cos_bins = np.hstack((-np.inf, np.linspace(0, 40, 20), np.inf))
     cos_hist, b = np.histogram(cos_dt_speed, bins=cos_bins)
@@ -95,7 +100,7 @@ def acceleration_features(velocity, angle_dt, cos_dt, speed=None):
                      fraction_slow,
                      stops,
                      fraction_stationary])
-    return np.hstack((feats1, n_speed_hist, n_angle_hist, n_acc_hist, n_cos_hist))
+    return np.hstack((feats1, n_speed_hist, n_angle_hist, n_acc_hist, n_cos_hist, n_acc_angle_hist))
     #return np.hstack((feats1, n_speed_hist, n_four_speed_hist, n_acc_hist, n_angle_hist))
 
 def main():
