@@ -6,7 +6,8 @@
 	sorting=none
 ]{biblatex}
 \addbibresource{report.bib}
-\usepackage[margin=0.6in]{geometry}
+\usepackage{authblk}
+\usepackage[left=0.7in, right=0.7in, top=0.7in, bottom=0.9in]{geometry}
 \usepackage{listings}
 \usepackage{graphicx}
 \usepackage{bm}
@@ -19,13 +20,76 @@
 \usepackage{algorithmicx}
 \usepackage[font=small,skip=2pt]{caption}
 \hyphenpenalty=10000
+\linespread{1.05}
+\setlength{\columnsep}{0.25in}
+\renewcommand{\thesection}{\arabic{section}}
 
 \begin{document}
 \lstset{language=Matlab, basicstyle=\small}
-\title{Machine Learning}
-\author{Hendrik Appel \\ hja1g11 - 24608866 \\ Samir \\ username}
+\title{\textbf{COMP6208 Advanced Machine Learning} \\
+{\Large Student Mini-Projects}}
+
+\author{\textbf{Alexander Ally} (aa2g11)\\
+\textbf{Hendrik Appel} (hja1g11)\\
+\textbf{Samir Moussa} (sm28g11)}
+
+\affil{School of Electronics and Computer Science\\
+Faculty of Physical Sciences and Engineering\\
+University of Southampton}
+\date{Thursday 7\textsuperscript{th} May 2015}
 \maketitle
 
-\printbibliography
+\begin{abstract}
+Abstract goes here
+\end{abstract}
 
+% section
+\section{Introduction}
+
+
+
+
+% section
+\section{Problem Scenario}
+
+\subsection{Dataset}
+
+\subsection{Challenges}
+
+\subsection{Variant Approaches}
+
+
+
+
+
+
+% section
+\section{Analysis \& Experimentation}
+
+\subsection{Preprocessing}
+
+
+\subsection{Machine Learning}
+
+
+
+\subsection{Deep Learning}
+
+
+
+\subsection{Validation}
+
+\subsection{Large Scale Implementation}
+
+
+
+
+
+% section
+\section{Conclusion}
+
+\subsection{Further Work}
+
+
+\printbibliography
 \end{document}
