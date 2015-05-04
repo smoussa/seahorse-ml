@@ -9,8 +9,11 @@ import random
 import sys
 
 def angle_between(v1, v2):
-    cos_sim = np.dot(v1, v2)/(np.linalg.norm(v1) * np.linalg.norm(v2))
+    cos_sim = cos_between(v1, v2)
     return np.arccos(cos_sim)
+
+def cos_between(v1, v2):
+    return np.dot(v1, v2)/(np.linalg.norm(v1) * np.linalg.norm(v2))
 
 def identify_corners(velocity, dist=None):
     """
