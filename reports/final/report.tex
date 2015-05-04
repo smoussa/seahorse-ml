@@ -20,7 +20,7 @@
 \usepackage{algorithmicx}
 \usepackage[font=small,skip=2pt]{caption}
 \hyphenpenalty=10000
-\linespread{1.05}
+\linespread{1.03}
 \setlength{\columnsep}{0.25in}
 \renewcommand{\thesection}{\arabic{section}}
 
@@ -68,13 +68,66 @@ Abstract goes here
 
 \subsection{Preprocessing}
 
+Since the raw data is unstructured and does not provide useful, or in fact any description of the important underlying features surrounding that of a driver and their driving behaviour, much of the complications faced throughout the project arose from the extraction of effective features. Forming useful features from unstructured data allows learning algorithms to perform well while minimising the amount of redundant data. A system named \textit{representation learning} requires a model to not only learn a mapping function from input to output, but intrinsically learn a representation of the data within the model. As discussed later, unsupervised learning techniques, particularly deep learning, aim to apply representation learning to establish a expressive representation of the underlying data, enough to extract useful information and reason about new information.
+
+
+The extracted features contained $N_F$ continuous variables and can be summarised by the following list:
+
+\begin{itemize}
+\item Feature 1
+\item Feature 2
+\end{itemize}
+
 
 \subsection{Machine Learning}
 
 
 
+
 \subsection{Deep Learning}
 
+While many of the common approaches have demonstrated sufficient performance tackling, machine learning, statistical and prediction-based problems, more recent but advanced methods in the field of \textit{deep learning} have attracted much attention due to their vastly clever architectures and training algorithms. The field started to gain traction when Geoff Hinton \cite{hinton2006fast} released a paper on the discovery of a new training algorithm for deep belief networks.
+
+Deep learning architectures aim to model the structure of the mammal brain, organised in multiple, deep levels \cite{serre2007quantitative}. In the context of image perception, the primary visual cortex serves to extract local features from scenes or images in the form of bars, edges or lines, then build higher level encodings that compute more precise details about the objects being observed \cite{lee1998role}. Deep learning tackles the problem of learning representations using this neurologically inspired mechanism by providing a distributed description of its input in a hierarchical structure of progressively more abstract representations.
+
+A typical deep learning model takes the form of a conventional feedforward neural network with many hidden layers and a deep architecture. However, the term `deep' does not signify the property of a model having many layers but rather the training algorithms used to learn a model in the manner of stacking visible and hidden layers. Depending on the type of architecture, models may be \textit{over-complete} (more hidden nodes than visible nodes), or \textit{under-complete} (more visible nodes than hidden nodes). It has been shown that over-complete representations with appropriate regularisation lead to better performing models \cite{vincent2010stacked}.
+
+To assess the performance of deep learning on our problem, a \textit{Deep Belief Network} (DBN) was trained with the features extracted at the preprocessing stage. A DBN comprises a series of stacked \textit{Restricted Boltzmann Machines} (RBMs). An RBM is a probabilistic graphical model of connected nodes, or more specifically, an energy-based model of variables (or nodes) $\mathbf{x}$ where the energy of the graph is of the form $p(\mathbf{x})=e^{\mathbf{-E(x)}}$, where $\mathbf{E}$ is an energy function. An RBM has two layers -- a visible layer and hidden layer. The objective is to minimise the energy of the model with respect to the weights between the layers. The training algorithm used is called (one-step) \textit{contrastive divergence} \cite{hinton2002training} and works by sampling between the layers so that the hidden layer learns the visible layer at a different dimension while capturing essential information. After training an RBM, another can be stacked on top by using the previous hidden layer as the visible layer for the next RBM.
+
+To build a DBN, three RBMs were trained an `unfolded' into a feedforward neural network with one output node representing the binary decision value of whether a trip belongs to the driver. Each driver was represented by a model specified by the parameters in tables~\ref{table:dbnparams} and~\ref{table:dbnlayers}.
+
+\begin{table}[h]
+\centering
+\small{
+\caption{DBN Parameter Settings}
+\label{table:dbnparams}
+\begin{tabular}{|l|l|} \hline
+\textbf{Parameter}&\textbf{Value}\\ \hline
+Activation function & Sigmoid\\ \hline
+Batch size & 50\\ \hline
+Momentum & 0\\ \hline
+Alpha & 1\\ \hline
+Training epochs & 5\\ \hline
+Model epochs & 50\\ \hline
+No. Workers & 16\\ \hline
+\end{tabular}}
+\end{table}
+
+
+\begin{table}[h]
+\centering
+\small{
+\caption{DBN Layers}
+\label{table:dbnlayers}
+\begin{tabular}{|l|l|} \hline
+\textbf{Layer}&\textbf{No. nodes}\\ \hline
+Input & $N_F$\\ \hline
+Hidden & 250\\ \hline
+Hidden & 250\\ \hline
+Hidden & 250\\ \hline
+Output & 1\\ \hline
+\end{tabular}}
+\end{table}
 
 
 \subsection{Validation}
