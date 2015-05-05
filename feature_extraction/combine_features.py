@@ -123,7 +123,7 @@ def write_files():
         print("processing driver", d)
         trips = read_trips(os.path.join(pathread, d))
         fmatrix = feature_matrix(trips)
-        np.savetxt(os.path.join(pathwrite, d + '.csv'), fmatrix, delimiter=',', header=header_str, fmt="%10.9f") 
+        np.save(os.path.join(pathwrite, d + '.npy'), fmatrix) 
 
 if __name__ == "__main__":
     write_files()
