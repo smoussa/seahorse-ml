@@ -17,6 +17,8 @@
 \usepackage{wrapfig}
 \usepackage{listings}
 \usepackage{tabulary}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 \usepackage{algorithmicx}
 \usepackage[font=small,skip=2pt]{caption}
 \hyphenpenalty=10000
@@ -144,8 +146,55 @@ However some jaggedness remains in periods of low velocity.
     \caption{Savitzky-Golay smoothed velocity component}
     \label{fig:savgolsmooth}
 \end{figure}
+\subsection{Feature Extraction}
+As explained previously, the data does not contain anything that resembles a set of features. So in order to be able to perform machine learning techniques features were first designed and extracted.
 
+\subsubsection{Histogram Features}
+A number of different histograms could be taken over speeds, accelerations, acceleration gradient and angular change of the driver. It was hoped that different driving styles would be reflected by differing distributions in these computed measurements. One could also take histograms over combinations of measurements. For example a feature used was a histogram of speed multiplied by angular change. It was hoped that would encapsulate a driver's behaviour whilst he or she made turns. Another feature was a histogram over the cosine of angular change multiplied by speed. Since the cosine of an angle is 1 at zero it was hoped that this histogram would encapsulate a driver's behaviour during straighter sections of road. Additionally histograms were taken when using longer time periods, particularly with angular change which was typically very small over the one second intervals.
 
+\subsubsection{Corner Features}
+Other features explored were those associated with corners. It was theorised that the number of corners may characterise the type of route a driver would take. For example a driver that prefers to take back roads may encounter more corners than a driver who prefers main roads. Before such features could be extracted the corners had to first be identified. Algorithm \ref{alg:corners} shows the procedure used for identifying corners. $C$ is a set of corners which is iteratively added to. Vector $\mathbf{v^{(i)}}$ refers to the $ith$ velocity in a trip. The algorithm cycles through the velocity vectors keeping a cumulative sum of distance. If the cumulative distance exceeds a certain value or the angle between the initial velocity and the current velocity is no longer increasing, a check is then made to see if the angle between the current velocity and the initial velocity is above some threshold. If it is a corner has been identified and the process is repeated from after the corner. Otherwise the process is repeated again from one place in front of the start of the current search.
+
+\begin{algorithm}
+\begin{algorithmic}
+    \State $C \gets \{\}$
+    \While{$i < m$}
+        \State $d \gets ||\mathbf{v}^{(i)}||_2$
+        \If{$d < 1$}
+            \State \textbf{continue}
+        \EndIf
+        \State $j \gets i + 1$
+        \State $d_{\text{curr}} \gets d$    
+        \State $c_{\text{prev}} \gets 0$ 
+        \Loop
+            \State{$c_{\text{curr}} \gets \text{angle}(\mathbf{v}^{(i)}, \mathbf{v}^{(j)})$}
+            \If{$d_{\text{curr}} > d_{\text{thresh}} \textbf{ or } c_{\text{curr}} < c_{\text{prev}} $ }
+                \If{$c_{\text{curr}} > c_{\text{thresh}}$}
+                    \State $C \gets C \cup \{(i, j)\}$
+                    \State $i \gets j$
+                \EndIf
+                \State \textbf{break}
+            \EndIf
+            \State $c_{\text{prev}} \gets c_{\text{curr}}$ 
+            \State $j \gets j+1$
+        \EndLoop
+        \State $i \gets i+1$
+    \EndWhile
+\end{algorithmic}
+\caption{Identifying corners}
+\label{alg:corners}
+\end{algorithm}
+
+A check is also made to ensure that the vehicle is traveling at a reasonable speed otherwise random fluctuations (even with smoothing) cause problems for the algorithm.
+
+Figure \ref{fig:corners} demonstrates the effectiveness of the algorithm \ref{alg:corners} by showing a trip with the corners found by the procedure highlighted in red. 
+
+\begin{figure}[h]
+    \center
+    \includegraphics[width=\linewidth]{corners}
+    \caption{Plot showing trip with corners highlighted in red}
+    \label{fig:corners}
+\end{figure}
 \subsection{Machine Learning}
 
 
