@@ -13,7 +13,7 @@ def predict_trips(driver, d_set, path):
     driver_fmatrix = np.load(os.path.join(path, driver))
     random_drivers = [np.load(os.path.join(path, d)) for d in random.sample(driver_set, 18)]
     predictions = np.ones(200)
-    for i in range(10):
+    for i in range(0, 200, 20):
         arr = [d[random.sample(range(len(d)), 10)] for d in random_drivers]
         train_other = np.vstack(arr)
         train_matrix = np.vstack((driver_fmatrix[:i], driver_fmatrix[i+20:], train_other))
@@ -24,7 +24,7 @@ def predict_trips(driver, d_set, path):
         clf.fit(train_matrix, train_targets)
         print(driver, "predicting")
         pred = clf.predict(test_matrix)
-        predictions[i:i+20] += pred
+        predictions[i:i+20] = pred
     return predictions
 
 def save_results(results, results_path):
