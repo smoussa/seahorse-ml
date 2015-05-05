@@ -4,15 +4,14 @@ import sys
 import os
 import numpy as np
 import random
-from pandas.io import parsers
 from itertools import repeat 
 
 
 def predict_trips(driver, d_set, path):
     print(driver)
     driver_set = d_set.difference([driver]) 
-    driver_fmatrix = parsers.read_csv(os.path.join(path, driver)).as_matrix()
-    random_drivers = [parsers.read_csv(os.path.join(path, d)).as_matrix() for d in random.sample(driver_set, 18)]
+    driver_fmatrix = np.load(os.path.join(path, driver)).as_matrix()
+    random_drivers = [np.load(os.path.join(path, d)).as_matrix() for d in random.sample(driver_set, 18)]
     predictions = np.ones(200)
     for i in range(10):
         arr = [d[random.sample(range(len(d)), 10)] for d in random_drivers]
@@ -30,20 +29,21 @@ def predict_trips(driver, d_set, path):
 
 def save_results(results, results_path):
     with open(results_path, 'w') as f:
-        f.writeline("driver,pval")
+        f.write("driver,pval\n")
         for driver, predictions in results.items():
             for i, p in enumerate(predictions):
-                f.writeline("{driver}_{trip},{pred}".format(driver=driver, trip=trip, pred=p))
+                f.write("{driver}_{trip},{pred}\n".format(driver=driver, trip=i+1, pred=p))
 
 def gen_pair(arg):
     d, driver_csvs, path = arg
     return (d.split('.')[0], predict_trips(d, driver_csvs, path))
 
+
 def main():
     path = sys.argv[1]
     results_path = sys.argv[2]
     driver_csvs = set(os.listdir(path))
-    p = Pool(4)
+    p = Pool(30)
     results = dict(p.map(gen_pair, zip(driver_csvs, repeat(driver_csvs), repeat(path))))
     save_results(results, results_path)
 
