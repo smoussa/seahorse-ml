@@ -10,8 +10,8 @@ from itertools import repeat
 def predict_trips(driver, d_set, path):
     print(driver)
     driver_set = d_set.difference([driver]) 
-    driver_fmatrix = np.load(os.path.join(path, driver)).as_matrix()
-    random_drivers = [np.load(os.path.join(path, d)).as_matrix() for d in random.sample(driver_set, 18)]
+    driver_fmatrix = np.load(os.path.join(path, driver))
+    random_drivers = [np.load(os.path.join(path, d)) for d in random.sample(driver_set, 18)]
     predictions = np.ones(200)
     for i in range(10):
         arr = [d[random.sample(range(len(d)), 10)] for d in random_drivers]
