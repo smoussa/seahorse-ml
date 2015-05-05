@@ -12,9 +12,6 @@ from  sklearn.svm import SVC
 import sys
 import os 
 from multiprocessing import Pool
-import matplotlib.pyplot as plt
-import matplotlib
-from mpl_toolkits.mplot3d import Axes3D
 
 def feature_vector(trip):
     velocity = compute_velocity(trip)
