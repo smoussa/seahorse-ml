@@ -82,6 +82,7 @@ def main():
     features = np.array([corners_features(v, s) for v, s in zip(velocities, speeds)])
     #print(features)
     n = random.randint(0, 199)
+    n = 29
     print("Trip number is:", n)
     (corners, angles) = identify_corners(velocities[n])
     trip = trips[n]
