@@ -63,8 +63,14 @@ Deciding to solve this machine learning problem was due to the appeal of facing 
 
 The AXA dataset contains over 2,700 drivers and each driver has 200 trips associated. Each trip is specified by a variable-length list of $(x,y)$ coordinates describing the position of the driver at each second relative to the starting position. To protect the privacy of drivers and their information, all trips are centred to start at the origin $(0,0)$, randomly rotated and partially truncated from either the beginning or end of the trip. False trips are assigned to each driver and but it is not possible to distinguish between true positive and true negative trips due to the absence of labels. The size of the entire dataset is just over half a terabyte with exactly 547,200 trips to predict.
 
-
 \subsection{Challenges}
+
+As expected with most real-world data, there were a variety of challenges that needed to be overcome in order to start experimentation. The challenges faced, specifically with this problem, was the unavailability of labels, presenting us with an unsupervised learning problem. Our models therefore needed to consider learning latent variables or take on clustering methods to try and find some structure to the data. Moreover, the fact that coordinates do not offer any useful description, some preprocessing and feature extraction was required. The features may be extracted manually using prior knowledge of the problem domain or learned though hidden variables as in neural networks.
+
+Since the dataset is very large, it was expected to take a fairly long time to perform preprocessing and learn a model. To overcome this, some parallelisation work was required, utilising the university's available computing power. Finally, the data included some degree of noise and missing values due to the inaccuracies associated with GPS readings. Although little feedback was expected to be given from our models in terms of validating the accuracy of our predictions, a submission to the Kaggle competition did present us with an overall score, although this did not give us information of any use to improve our models.
+
+
+
 
 \subsection{Variant Approaches}
 
