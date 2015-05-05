@@ -196,23 +196,14 @@ Figure \ref{fig:corners} demonstrates the effectiveness of the algorithm \ref{al
     \label{fig:corners}
 \end{figure}
 \subsection{Machine Learning}
+Whilst the problem scenario prescribes an unsupervised learning technique one can also leverage the fact that the data is labelled. And although the problem is such that some of the data points are mislabelled, supervised learning techniques can still be applied in the hope that the models learned will be general enough such that the mislabelled examples don't affect predictions much. As such a number of different supervised and unsupervised approaches were used in an attempt to solve the problem.
 
 
-% put other approaches here
+\subsubsection{Supervised Learning Approaches}
+For each driver a machine is trained on 180 of their trips labelled as 1 and 180 trips selected from 18 other drivers selected at random each labelled as 0. This process is repeated 10 times such that all trips for that driver have a prediction made on them.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+\subsubsection{Gradient Boosting Trees}
+Gradient boosting is a technique for combining many weak learning machines into a single machine which achieves better performance. First outlined by Freidman \cite{friedman2001greedy} this proved to be one of the more successful techniques for making predictions based upon the data. 
 
 
 
