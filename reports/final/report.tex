@@ -51,10 +51,18 @@ This is a report describing the preprocessing methods, machine learning algorith
 
 
 
+
 % section
 \section{Problem Scenario}
 
+The task detailed in this report is to use telematic data to identify driver signatures. This problem was initially released as a challenge available to members of the machine learning community provided by Kaggle\footnote{kaggle.com/c/axa-driver-telematics-analysis} and supported by multinational insurance company AXA. For automobile insurers, understanding the driving behaviour (telematics) of their customers allows them to quantify liability and price their insurance policies according to the risk associated with different drivers. For drivers, policies can be better suited to their experience and driving mannerisms. The end task is to develop an algorithmic signature or "telematic fingerprint" of a driver to identify when a particular trip has been driven by that driver.
+
+Deciding to solve this machine learning problem was due to the appeal of facing challenges and complexities involved in dealing with real-world information and being able to apply machine learning methods to extract useful information and make sense of it. As demonstrated throughout the report, obstacles were far from few.
+
 \subsection{Dataset}
+
+The AXA dataset contains over 2,700 drivers and each driver has 200 trips associated. Each trip is specified by a variable-length list of $(x,y)$ coordinates describing the position of the driver at each second relative to the starting position. To protect the privacy of drivers and their information, all trips are centred to start at the origin $(0,0)$, randomly rotated and partially truncated from either the beginning or end of the trip. False trips are assigned to each driver and but it is not possible to distinguish between true positive and true negative trips due to the absence of labels. The size of the entire dataset is just over half a terabyte with exactly 547,200 trips to predict.
+
 
 \subsection{Challenges}
 
@@ -70,18 +78,52 @@ This is a report describing the preprocessing methods, machine learning algorith
 
 \subsection{Preprocessing}
 
-Since the raw data is unstructured and does not provide useful, or in fact any description of the important underlying features surrounding that of a driver and their driving behaviour, much of the complications faced throughout the project arose from the extraction of effective features. Forming useful features from unstructured data allows learning algorithms to perform well while minimising the amount of redundant data. A system named \textit{representation learning} requires a model to not only learn a mapping function from input to output, but intrinsically learn a representation of the data within the model. As discussed later, unsupervised learning techniques, particularly deep learning, aim to apply representation learning to establish a expressive representation of the underlying data, enough to extract useful information and reason about new information.
+Forming useful features from unstructured data allows learning algorithms to perform well while minimising the amount of redundant data. A system named \textit{representation learning} requires a model to not only learn a mapping function from input to output, but intrinsically learn a representation of the data within the model. As discussed later, unsupervised learning techniques, particularly deep learning, aim to apply representation learning to establish a expressive representation of the underlying data, enough to extract useful information and reason about new information.
+
+Since the raw data is unstructured and does not provide useful, or in fact any description of the important underlying features surrounding that of a driver and their driving behaviour, much of the complications faced throughout the project arose from the extraction of effective features. The trips were merely composed of sequences of GPS coordinates taken at one-second intervals. The data had to be processed and features were to be designed before machine learning techniques could be applied to make predictions. In addition the GPS coordinates given in the data were subject to inaccuracy. 
+
+The extracted features contained $N_F$ continuous variables and can be summarised by the list in appendix X.
 
 
-The extracted features contained $N_F$ continuous variables and can be summarised by the following list:
+\subsection{Data Smoothing}
+Because the features were often based upon first and second order gradients of the original data, noise caused a lot of problems. Particularly when the speed of the vehicle was low, small fluctuations in the position of the vehicle caused a small velocity and acceleration to be reported. When directional information is extracted from these gradients (and magnitude information thrown away) there would appear to be wild changes in direction when really the vehicle was stationary and there was small fluctuations in the position information being reported. 
 
-\begin{itemize}
-\item Feature 1
-\item Feature 2
-\end{itemize}
+In order to solve this problem a number of different avenues were explored. One simple approach was report any velocity with a magnitude of less than a small value to be set to 0. However this ignored smoothness issues that occurred at higher speeds. To remedy this a simple filter was constructed by applying the Discrete Fourier Transform and reconstructing th data using fewer components. This does appear to work well in general but in sections where the driver is crawling along at a very low speed were the filter wrongly assumes that the driver is stationary. This can be observed in the plot in figure \ref{fig:fouriersmooth}.
+
+\begin{figure}[h]
+    \center
+    \includegraphics[width=\linewidth]{fouriersmooth}
+    \caption{Fourier smoothed velocity component}
+    \label{fig:fouriersmooth}
+\end{figure}
+
+Another approach attempted was to apply the Savitzky-Golay filter to smooth the data. Savitzky-Golay smooths data by convolution, fitting a polynomial to successive windows over the data points using a least squares optimisation. One can see that in figure \ref{fig:savgolsmooth} that the problem of threshold smoothing is does not appear and that the data appears to be much smoother. However some jaggedness remains in periods of low velocity.
+
+\begin{figure}[h]
+    \center
+    \includegraphics[width=\linewidth]{savgolsmooth}
+    \caption{Savitzky-Golay smoothed velocity component}
+    \label{fig:savgolsmooth}
+\end{figure}
 
 
 \subsection{Machine Learning}
+
+
+% put other approaches here
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
