@@ -234,11 +234,16 @@ Whilst the problem scenario prescribes an unsupervised learning technique one ca
 The unsupervised approach taken was a form of outlier detection wth each driver being considered separately. Firstly dimensionality reduction is performed through principle components analysis. Then the mean is computed and the Mahalanobis distance is computed from each data point to the mean. If it is assumed that the dataset is distributed according to a Gaussian distribution, one can infer that the distances to the mean are distributed according to a $\chi^2$ distribution where the degrees of freedom is equal to the number of features. One can then use the cumulative density function $F(x)$ to compute $1 - F(x)$. This is the probability that a another data point will be further away from the mean than it. If this value is greater than 0.5 then the trip is classified as belonging to the driver otherwise it is classified as not belonging to the driver.
 
 \subsubsection{Supervised Learning Approach}
-For each driver a machine is trained on 180 of their trips labelled as 1 and 180 trips selected from 18 other drivers selected at random each labelled as 0. This process is repeated 10 times such that all trips for that driver have a prediction made on them.
+For each driver a machine is trained on 180 of their trips labelled as 1 and 180 trips selected from 18 other drivers selected at random each labelled as 0. This process is repeated 10 times such that all trips for that driver have a prediction made on them. 
+
+This technique also afforded the use of rudimentary validation. One could test the trained classifiers on the data. And although this would not give an exactly correct score. It was good enough to be able to test different approaches before getting the correct score from a submission to kaggle.
 
 
 \subsubsection{Gradient Boosting Trees}
-Gradient boosting is a technique for combining many weak learning machines into a single machine which achieves better performance. First outlined by Freidman \cite{friedman2001greedy} this proved to be one of the more successful techniques for making predictions based upon the data.
+Gradient boosting is a technique for combining many weak learning machines into a single machine which achieves better performance. First outlined by Freidman \cite{friedman2001greedy} this proved to be one of the more successful techniques for making predictions based upon the data. The particular machine used by this team was provided by the scikit-learn library and 50 boosting stages were used.
+
+\subsubsection{Random Forests}
+Random Forests are another ensemble learning machine. They train many different decision trees on different parts of the data. These trees are then averaged. The motivation behind this technique is that decision trees often have low bias but high variance meaning they often overfit the data. It is hoped that the averaging reduces the variance with only a low cost to bias.
 
 
 
@@ -302,6 +307,7 @@ Output & 1\\ \hline
 
 
 \subsection{Validation}
+
 
 \subsection{Large Scale Implementation}
 
