@@ -2,8 +2,6 @@ from itertools import chain
 import numpy as np
 import scipy as sp
 from read_data import read_trips
-import matplotlib.pyplot as plt
-import matplotlib
 from acceleration_features import compute_velocity, compute_scalar
 import random
 import sys
@@ -65,7 +63,6 @@ def corners_features(velocity, dists=None):
         return np.zeros(14)
     corner_speeds = [dists[range(c1, c2+1)] for c1, c2 in corners]
     corner_speeds_contig = list(chain(*corner_speeds))
-    import matplotlib.pyplot as plt
     bins = np.linspace(0, 14, 10)
     corner_speed_hist, bs = np.histogram(corner_speeds_contig, bins=bins)
     mean_corner_speeds = [np.mean(cs) for cs in corner_speeds]
@@ -85,9 +82,11 @@ def main():
     features = np.array([corners_features(v, s) for v, s in zip(velocities, speeds)])
     #print(features)
     n = random.randint(0, 199)
+    n = 29
     print("Trip number is:", n)
     (corners, angles) = identify_corners(velocities[n])
     trip = trips[n]
+    import matplotlib.pyplot as plt
     plt.scatter(trips[n][:,0], trips[n][:,1])#, c=speeds[n])
     for start, end in corners:
         t = trip[list(range(start, end+1))]
