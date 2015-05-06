@@ -81,7 +81,7 @@ The size of the entire dataset is just over half a terabyte with exactly 547,200
 
 \begin{figure}[h]
     \center
-    \includegraphics[width=\linewidth]{sample_driver_vis}
+    \includegraphics[width=\linewidth]{img/sample_driver_vis}
     \caption{Typical illustration of trips for a driver.}
     \label{fig:tripsgraph}
 \end{figure}
@@ -141,7 +141,7 @@ This can be observed in the plot in figure \ref{fig:fouriersmooth}.
 
 \begin{figure}[h]
     \center
-    \includegraphics[width=\linewidth]{fouriersmooth}
+    \includegraphics[width=\linewidth]{img/fouriersmooth}
     \caption{Fourier smoothed velocity component.}
     \label{fig:fouriersmooth}
 \end{figure}
@@ -153,18 +153,35 @@ However some jaggedness remains in periods of low velocity.
 
 \begin{figure}[h]
     \center
-    \includegraphics[width=\linewidth]{savgolsmooth}
+    \includegraphics[width=\linewidth]{img/savgolsmooth}
     \caption{Savitzky-Golay smoothed velocity component.}
     \label{fig:savgolsmooth}
 \end{figure}
 \subsection{Feature Extraction}
-As explained previously, the data does not contain anything that resembles a set of features. So in order to be able to perform machine learning techniques features were first designed and extracted.
+As explained previously, the data does not contain anything that resembles a set of features.
+So in order to be able to perform machine learning techniques features were first designed and extracted.
 
 \subsubsection{Histogram Features}
-A number of different histograms could be taken over speeds, accelerations, acceleration gradient and angular change of the driver. It was hoped that different driving styles would be reflected by differing distributions in these computed measurements. One could also take histograms over combinations of measurements. For example a feature used was a histogram of speed multiplied by angular change. It was hoped that would encapsulate a driver's behaviour whilst he or she made turns. Another feature was a histogram over the cosine of angular change multiplied by speed. Since the cosine of an angle is 1 at zero it was hoped that this histogram would encapsulate a driver's behaviour during straighter sections of road. Additionally histograms were taken when using longer time periods, particularly with angular change which was typically very small over the one second intervals.
+A number of different histograms could be taken over speeds, accelerations, acceleration gradient and angular change of the driver.
+It was hoped that different driving styles would be reflected by differing distributions in these computed measurements.
+One could also take histograms over combinations of measurements.
+For example a feature used was a histogram of speed multiplied by angular change. It was hoped that would encapsulate a driver's behaviour whilst he or she made turns.
+Another feature was a histogram over the cosine of angular change multiplied by speed.
+Since the cosine of an angle is 1 at zero it was hoped that this histogram would encapsulate a driver's behaviour during straighter sections of road.
+Additionally histograms were taken when using longer time periods, particularly with angular change which was typically very small over the one second intervals.
 
 \subsubsection{Corner Features}
-Other features explored were those associated with corners. It was theorised that the number of corners may characterise the type of route a driver would take. For example a driver that prefers to take back roads may encounter more corners than a driver who prefers main roads. Before such features could be extracted the corners had to first be identified. Algorithm \ref{alg:corners} shows the procedure used for identifying corners. $C$ is a set of corners which is iteratively added to. Vector $\mathbf{v^{(i)}}$ refers to the $ith$ velocity in a trip. The algorithm cycles through the velocity vectors keeping a cumulative sum of distance. If the cumulative distance exceeds a certain value or the angle between the initial velocity and the current velocity is no longer increasing, a check is then made to see if the angle between the current velocity and the initial velocity is above some threshold. If it is a corner has been identified and the process is repeated from after the corner. Otherwise the process is repeated again from one place in front of the start of the current search.
+Other features explored were those associated with corners.
+It was theorised that the number of corners may characterise the type of route a driver would take. For example a driver that prefers to take back roads may encounter more corners than a driver who prefers main roads.
+Before such features could be extracted the corners had to first be identified.
+Algorithm \ref{alg:corners} shows the procedure used for identifying corners.
+$C$ is a set of corners which is iteratively added to.
+Vector $\mathbf{v^{(i)}}$ refers to the $ith$ velocity in a trip.
+The algorithm cycles through the velocity vectors keeping a cumulative sum of distance.
+If the cumulative distance exceeds a certain value or the angle between the initial velocity and the current velocity is no longer increasing, a check is then made to see if the angle between the current velocity and the initial velocity is above some threshold.
+If it is a corner has been identified and the process is repeated from after the corner.
+Otherwise the process is repeated again from one place in front of the start of the current search.
+
 
 \begin{algorithm}
 \begin{algorithmic}
@@ -196,23 +213,72 @@ Other features explored were those associated with corners. It was theorised tha
 \label{alg:corners}
 \end{algorithm}
 
-A check is also made to ensure that the vehicle is traveling at a reasonable speed otherwise random fluctuations (even with smoothing) cause problems for the algorithm.
+A check is also made to ensure that the vehicle is travelling at a reasonable speed otherwise random fluctuations (even with smoothing) cause problems for the algorithm.
 
 Figure \ref{fig:corners} demonstrates the effectiveness of the algorithm \ref{alg:corners} by showing a trip with the corners found by the procedure highlighted in red. 
 
 \begin{figure}[h]
     \center
-    \includegraphics[width=\linewidth]{corners}
+    \includegraphics[width=\linewidth]{img/corners}
     \caption{Plot showing trip with corners highlighted in red.}
     \label{fig:corners}
 \end{figure}
 
+\subsubsection{Straights}
+
+Similarly to corners, features were created regarding slightly longer and straight sections of road.
+The aim was to try and isolate a driver's driving style on straight sections, specifically hoping to capture their driving characteristics on motorways.
+To do this straight sections had to be identified.
+Straights were defined as sections of movement where the difference in distance travelled and the euclidean distance was below some threshold.
+The threshold was made relative to the distance travelled as the magnitude of the difference would vary with the length of the straight.
+A minimum length was also set for straights.
+
+Algorithm \ref{alg:straights} defines how straights are identified.
+The algorithm makes use of the vector $\mathbf{v}$ containing coordinates and the vector $\mathbf{dists}$ which contains the euclidean distances between the points.
+There are two loops, one for the start index and another for the end index, the total distance travelled between these two indices is calculated.
+The euclidean distance between the start and end section is calculated by subtracting the two position vectors and taking the norm.
+The absolute difference of these two values is then compared to the threshold.
+The threshold is the maximum percentage of the distance travelled that the straight can vary by, this allows longer slightly curved roads to be counted.
+If the straight is within the threshold and the above the minimum length then the straight is added to a map indexed by the start index and storing the end index along with the length of the straight.
+
+Features extracted from this data include data about the length of the straights and the speeds at which the user drove along them.
+
+\begin{algorithm}
+\begin{algorithmic}
+    \State $S \gets \{\}$
+    \State $i_{\text{end}} \gets 0$
+    \While{$i < length(\mathbf{dists})$}
+        \If{$i \leq i_{\text{end}}$}
+            \State \textbf{continue}
+        \EndIf
+        \For{$j \gets i+1, length(dists)$}
+            \State $dist_{\text{sum}} \gets sum(\mathbf{dists}^{(i\text{:}j)})$
+            \State $dist_{\text{diff}} \gets dist_{\text{sum}} - ||\mathbf{v}^{(i)} - \mathbf{v}^{j+1}||_2$
+            \State $below \gets abs(dist_{\text{diff}}) < t * dist_{\text{sum}}$
+            \If{$dist_{\text{sum}} > min_{length} \ \textbf{and} \ below$ }
+                \State $S[i] = (j+1, dist_sum)$
+                \State $i_{end} = j$
+            \EndIf
+        \EndFor
+        \State $i \gets i+1$
+    \EndWhile
+\end{algorithmic}
+\caption{Identifying straights}
+\label{alg:straights}
+\end{algorithm}
+
+\begin{figure}[h]
+    \center
+    \includegraphics[width=\linewidth]{img/straights.eps}
+    \caption{Plot showing a trip with straights identified in red.}
+    \label{fig:straights}
+\end{figure}
 
 \subsubsection{Distance, Velocity \& Time-Related Features}
 
 \begin{figure}[h]
     \center
-    \includegraphics[width=\linewidth]{speed_highlights}
+    \includegraphics[width=\linewidth]{img/speed_highlights}
     \caption{Points when the driver is stationary (black) and with low (red) and high (red) velocities.}
     \label{fig:speedpoints}
 \end{figure}
@@ -228,7 +294,9 @@ The thresholds determining ``high" and ``low" velocities were manually configure
 
 
 \subsection{Machine Learning}
-Whilst the problem scenario prescribes an unsupervised learning technique one can also leverage the fact that the data is labelled. And although the problem is such that some of the data points are mislabelled, supervised learning techniques can still be applied in the hope that the models learned will be general enough such that the mislabelled examples don't affect predictions much. As such a number of different supervised and unsupervised approaches were used in an attempt to solve the problem.
+Whilst the problem scenario prescribes an unsupervised learning technique one can also leverage the fact that the data is labelled.
+And although the problem is such that some of the data points are mislabelled, supervised learning techniques can still be applied in the hope that the models learned will be general enough such that the mislabelled examples don't affect predictions much.
+As such a number of different supervised and unsupervised approaches were used in an attempt to solve the problem.
 
 \subsubsection{Unsupervised Learning Approach}
 The unsupervised approach taken was a form of outlier detection wth each driver being considered separately. Firstly dimensionality reduction is performed through principle components analysis. Then the mean is computed and the Mahalanobis distance is computed from each data point to the mean. If it is assumed that the dataset is distributed according to a Gaussian distribution, one can infer that the distances to the mean are distributed according to a $\chi^2$ distribution where the degrees of freedom is equal to the number of features. One can then use the cumulative density function $F(x)$ to compute $1 - F(x)$. This is the probability that a another data point will be further away from the mean than it. If this value is greater than 0.5 then the trip is classified as belonging to the driver otherwise it is classified as not belonging to the driver.
@@ -244,7 +312,6 @@ Gradient boosting is a technique for combining many weak learning machines into 
 
 \subsubsection{Random Forests}
 Random Forests are another ensemble learning machine. They train many different decision trees on different parts of the data. These trees are then averaged. The motivation behind this technique is that decision trees often have low bias but high variance meaning they often overfit the data. It is hoped that the averaging reduces the variance with only a low cost to bias.
-
 
 
 \subsection{Deep Learning}
