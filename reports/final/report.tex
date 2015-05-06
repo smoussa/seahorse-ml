@@ -44,8 +44,9 @@ University of Southampton}
 \begin{abstract}
 
 This is a report describing the preprocessing methods, machine learning algorithms and validation techniques used to find a solution to a typical real-world machine learning problem in the driver telematics analysis space.
-The task is to model individual drivers based on their driving behaviour specified by their trip data.
-Several approaches were studied and utilised to find a practical solution to a challenging task and these are explained in this report.
+The task is to model individual drivers based on their driving behaviour specified by their trip data to identify whether a particular trip has been driven by a driver or otherwise.
+Several approaches were studied and utilised to find a practical solution to a challenging task and our experiments are detailed in this report.
+We found that ensemble tree-based methods and deep belief networks performed fairly well at classifying trips.
 
 \end{abstract}
 
@@ -73,8 +74,17 @@ As demonstrated throughout the report, obstacles were far from few.
 The AXA dataset contains over 2,700 drivers and each driver has 200 trips associated.
 Each trip is specified by a variable-length list of $(x,y)$ coordinates describing the position of the driver at each second relative to the starting position.
 To protect the privacy of drivers and their information, all trips are centred to start at the origin $(0,0)$, randomly rotated and partially truncated from either the beginning or end of the trip.
+A typical set of 200 trips for a driver are plotted in figure \ref{fig:tripsgraph}.
 False trips are assigned to each driver and but it is not possible to distinguish between true positive and true negative trips due to the absence of labels.
 The size of the entire dataset is just over half a terabyte with exactly 547,200 trips to predict.
+
+\begin{figure}[h]
+    \center
+    \includegraphics[width=\linewidth]{sample_driver_vis}
+    \caption{Typical illustration of trips for a driver.}
+    \label{fig:tripsgraph}
+\end{figure}
+
 
 \subsection{Challenges}
 
@@ -131,7 +141,7 @@ This can be observed in the plot in figure \ref{fig:fouriersmooth}.
 \begin{figure}[h]
     \center
     \includegraphics[width=\linewidth]{fouriersmooth}
-    \caption{Fourier smoothed velocity component}
+    \caption{Fourier smoothed velocity component.}
     \label{fig:fouriersmooth}
 \end{figure}
 
@@ -143,7 +153,7 @@ However some jaggedness remains in periods of low velocity.
 \begin{figure}[h]
     \center
     \includegraphics[width=\linewidth]{savgolsmooth}
-    \caption{Savitzky-Golay smoothed velocity component}
+    \caption{Savitzky-Golay smoothed velocity component.}
     \label{fig:savgolsmooth}
 \end{figure}
 \subsection{Feature Extraction}
@@ -192,27 +202,39 @@ Figure \ref{fig:corners} demonstrates the effectiveness of the algorithm \ref{al
 \begin{figure}[h]
     \center
     \includegraphics[width=\linewidth]{corners}
-    \caption{Plot showing trip with corners highlighted in red}
+    \caption{Plot showing trip with corners highlighted in red.}
     \label{fig:corners}
 \end{figure}
+
+
+\subsubsection{Distance, Velocity \& Time-Related Features}
+
+\begin{figure}[h]
+    \center
+    \includegraphics[width=\linewidth]{speed_highlights}
+    \caption{Points when the driver is stationary (black) and with low (red) and high (red) velocities.}
+    \label{fig:speedpoints}
+\end{figure}
+
+% more on distance-related features
+
+A subset of the full set of features (Appendix X) corresponds to distance, speed and time related attributes of trips.
+A randomly sampled trip from the dataset is plotted in figure \ref{fig:speedpoints} with coloured points indicating areas of stationary periods (black) and low (yellow) and high (red) velocities.
+The thresholds determining ``high" and ``low" velocities were manually configured to best represent the natural motion of a driver along a trip.
+
+% more on speed and time related features
+
+
+
 \subsection{Machine Learning}
+Whilst the problem scenario prescribes an unsupervised learning technique one can also leverage the fact that the data is labelled. And although the problem is such that some of the data points are mislabelled, supervised learning techniques can still be applied in the hope that the models learned will be general enough such that the mislabelled examples don't affect predictions much. As such a number of different supervised and unsupervised approaches were used in an attempt to solve the problem.
 
 
-% put other approaches here
+\subsubsection{Supervised Learning Approaches}
+For each driver a machine is trained on 180 of their trips labelled as 1 and 180 trips selected from 18 other drivers selected at random each labelled as 0. This process is repeated 10 times such that all trips for that driver have a prediction made on them.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+\subsubsection{Gradient Boosting Trees}
+Gradient boosting is a technique for combining many weak learning machines into a single machine which achieves better performance. First outlined by Freidman \cite{friedman2001greedy} this proved to be one of the more successful techniques for making predictions based upon the data.
 
 
 
@@ -279,7 +301,8 @@ Output & 1\\ \hline
 
 \subsection{Large Scale Implementation}
 
-
+Processing large amounts of data presented many issues and we found the frequency of feedback hindered by the scale of the dataset.
+Thus, in order train our models in reasonable time, only a small sample of 200 drivers was used.
 
 
 
