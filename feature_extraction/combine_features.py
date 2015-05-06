@@ -27,7 +27,7 @@ def feature_vector(trip):
     #return acc_features
 
 def feature_matrix(trips, feature_vector=feature_vector):
-    p = Pool(3)
+    p = Pool(20)
     res = np.array(p.map(feature_vector, trips))
     p.terminate()
     return res

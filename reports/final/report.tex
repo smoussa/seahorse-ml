@@ -298,10 +298,12 @@ Whilst the problem scenario prescribes an unsupervised learning technique one ca
 And although the problem is such that some of the data points are mislabelled, supervised learning techniques can still be applied in the hope that the models learned will be general enough such that the mislabelled examples don't affect predictions much.
 As such a number of different supervised and unsupervised approaches were used in an attempt to solve the problem.
 
+\subsubsection{Unsupervised Learning Approach}
+The unsupervised approach taken was a form of outlier detection wth each driver being considered separately. Firstly dimensionality reduction is performed through principle components analysis. Then the mean is computed and the Mahalanobis distance is computed from each data point to the mean. If it is assumed that the dataset is distributed according to a Gaussian distribution, one can infer that the distances to the mean are distributed according to a $\chi^2$ distribution where the degrees of freedom is equal to the number of features. One can then use the cumulative density function $F(x)$ to compute $1 - F(x)$. This is the probability that a another data point will be further away from the mean than it. If this value is greater than 0.5 then the trip is classified as belonging to the driver otherwise it is classified as not belonging to the driver.
 
-\subsubsection{Supervised Learning Approaches}
 For each driver a machine is trained on 180 of their trips labelled as 1 and 180 trips selected from 18 other drivers selected at random each labelled as 0.
 This process is repeated 10 times such that all trips for that driver have a prediction made on them.
+
 
 \subsubsection{Gradient Boosting Trees}
 Gradient boosting is a technique for combining many weak learning machines into a single machine which achieves better performance.
