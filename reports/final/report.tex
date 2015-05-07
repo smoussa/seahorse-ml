@@ -409,11 +409,11 @@ One can observe that increasing the number of estimators generally increased the
 \end{figure}
 
 \subsection{Gradient Boosting Classifier}
-The gradient boosting classifiers resulted in good AUC scores, providing roughly comparable prediction performance to Random Forests. The plot shown in figure \ref{fig:gbperf} shows how the learning rate affects prediction performance. It shows that increasing the learning rate slightly increases the performance until a certain point before decreasing.
+The gradient boosting classifiers resulted in good AUC scores, providing roughly comparable prediction performance to Random Forests. The plot shown in figure \ref{fig:gbperf} shows how the learning rate affects prediction performance. It shows that increasing the learning rate slightly increases the performance until the learning rate is 0.5 before the score starts to decrease.
 
 \begin{figure}[h]
     \center
-    \includegraphics[width=\linewidth]{img/rfperf}
+    \includegraphics[width=\linewidth]{img/gbperf}
     \caption{Plot showing gradient boosting learning rate against AUC score}
     \label{fig:gbperf}
 \end{figure}
@@ -439,26 +439,10 @@ Certainly it does not perform as well as the tree ensemble methods.
 \section{Conclusion}
 
 \subsection{Further Work}
+One area which the team did not attempt to address was trip matching or road segment matching. Many drivers repeat the same trips or drive through the same roads. Identifying this would provide additional features which may hold some predictive power. Since the trips in the dataset are randomly rotated, trip matching is not a straight forward problem. One possible method would be to use the Ramer-Douglas-Peucker algorithm\cite{ramer1972iterative} for reducing the number of points on a curve an attempt to generate road segment features from these simplified trips.
 
+Another area for improvement would be better choice of bin boundaries for the histograms. The bin boundaries were largely chosen based upon intuition from looking at various histograms of trips and drivers. A more scientific approach would have possibly yielded better results.
 
-
-
-
-
-
-
-
-
-\begin{appendices}
-
-\chapter{Features}
-
-\begin{itemize} \itemsep0.5pt \parskip0pt \parsep0pt \ttfamily \small \bfseries
-  \item[] first item
-  \item[] second item
-\end{itemize}
-
-\end{appendices}
 
 \printbibliography
 \end{document}
