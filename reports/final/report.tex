@@ -81,7 +81,7 @@ The size of the entire dataset is just over half a terabyte with exactly 547,200
 
 \begin{figure}[h]
     \center
-    \includegraphics[width=\linewidth]{img/sample_driver_vis}
+    \includegraphics[width=\linewidth]{img/sample_driver_vis.eps}
     \caption{Typical illustration of trips for a driver.}
     \label{fig:tripsgraph}
 \end{figure}
@@ -240,6 +240,7 @@ The euclidean distance between the start and end section is calculated by subtra
 The absolute difference of these two values is then compared to the threshold.
 The threshold is the maximum percentage of the distance travelled that the straight can vary by, this allows longer slightly curved roads to be counted.
 If the straight is within the threshold and the above the minimum length then the straight is added to a map indexed by the start index and storing the end index along with the length of the straight.
+Figure \ref{fig:straights} show an example of the straigt section that get identified with this algorithm.
 
 Features extracted from this data include data about the length of the straights and the speeds at which the user drove along them.
 

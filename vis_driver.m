@@ -6,7 +6,7 @@ num_trips = 200;
 
 for t = 1:num_trips
     T = csvread([source_dir num2str(t) '.csv'], 1, 0);
-    plot(T(:,1), T(:,2));
+    plot(T(:,1), T(:,2),'LineSmoothing','on');
     hold on;
 end
 
