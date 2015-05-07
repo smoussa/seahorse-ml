@@ -315,11 +315,11 @@ Random Forests are another ensemble learning machine. They train many different 
 
 
 \subsubsection{Support Vector Machines}
-The Support Vector Machine (SVM) is a maxmimal margin classifier first outlined by Vapnik and Cortes\cite{cortes1995support}. It also allows classification of problems which aren't linearly separable through use of kernel functions. The implentation used was the scikit-learn implementation which is base on libsvm.
+The Support Vector Machine (SVM) is a maximal margin classifier first outlined by Vapnik and Cortes\cite{cortes1995support}. It also allows classification of problems which aren't linearly separable through use of kernel functions. The implementation used was the scikit-learn implementation which is base on libsvm.
 
 To use SVMs the data was first reduced in dimensionality through use of principle components analysis to 20 dimensions.
 
-This was used as an alternative to deep learning and tree based enemble methods to see how it compares for this particular problem domain.
+This was used as an alternative to deep learning and tree based ensemble methods to see how it compares for this particular problem domain.
 
 \subsubsection{Deep Learning}
 
@@ -381,12 +381,15 @@ Output & 1\\ \hline
 
 
 \subsection{Validation}
-The score given to a classifier is the area under curver (AUC) of the ROC curve. This provides a score of between one and zero. One being a perfect score. Predicting all positives would result in a score of 0.5.
+The score given to a classifier is the area under curve (AUC) of the ROC curve. This provides a score of between one and zero. One being a perfect score. Predicting all positives would result in a score of 0.5.
 
 \subsection{Large Scale Implementation}
 
 Processing large amounts of data presented many issues and we found the frequency of feedback hindered by the scale of the dataset.
 Thus, in order train our models in reasonable time, only a small sample of 200 drivers was used.
+
+\subsubsection{Supervised Learning Models}
+Since ten models needed to be trained per driver, the computational expense of running the supervised models was very high. Especially since there are in excess of 2700 drivers. In an attempt to remedy this the team used the university's computing structure which included machines with 64 CPU cores. Through use of Python's multiprocessing module. This allowed the task to be parallelized and shared amongst many cores, massively increasing the speed at which the models could be run.
 
 
 
