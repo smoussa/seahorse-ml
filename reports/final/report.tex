@@ -404,9 +404,33 @@ One can observe that increasing the number of estimators generally increased the
 \begin{figure}[h]
     \center
     \includegraphics[width=\linewidth]{img/rfperf}
-    \caption{Plot showing th number of estimators in a random forest against AUC score}
+    \caption{Plot showing the number of estimators in a random forest against AUC score}
     \label{fig:rfperf}
 \end{figure}
+
+\subsection{Gradient Boosting Classifier}
+The gradient boosting classifiers resulted in good AUC scores, providing roughly comparable prediction performance to Random Forests. The plot shown in figure \ref{fig:gbperf} shows how the learning rate affects prediction performance. It shows that increasing the learning rate slightly increases the performance until a certain point before decreasing.
+
+\begin{figure}[h]
+    \center
+    \includegraphics[width=\linewidth]{img/rfperf}
+    \caption{Plot showing gradient boosting learning rate against AUC score}
+    \label{fig:gbperf}
+\end{figure}
+
+\subsection{Support Vector Machines}
+SVMs performed fairly poorly on this particular problem. Table \ref{tab:svm} shows how SVMs performed with different kernel functions. One can see that they barely performed better than predicting all positives. Perhaps it was because the kernel functions used did not translate the input vectors into a vector space where the data is linearly separable. The team wasn't able to use linear or polynomial kernels as the training time was very high and the number of machines that needed to be trained was very large.
+\begin{table}[h]
+    \center
+    \begin{tabular}{| l | l |}
+        \hline
+        Kernel Function & AUC Score \\ \hline
+        Radial Basis Function & 0.50797 \\ \hline
+        Sigmoid & 0.5 \\ \hline
+    \end{tabular}
+    \caption{SVM kernel functions and their scores}
+    \label{tab:svm}
+\end{table}
 
 \subsection{Unsupervised outlier detection}
 The unsupervised outlier detection achieved an AUC score of 0.60081 which shows an improvement over predicting all positives but not a significant one. 
