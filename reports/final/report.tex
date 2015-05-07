@@ -414,6 +414,10 @@ SVMs performed fairly poorly on this particular problem. Table \ref{tab:svm} sho
     \label{tab:svm}
 \end{table}
 
+\subsection{Deep Learning}
+
+The deep belief network predictions did not demonstrate great performance and the submission returned a classification accuracy of 58\%. However, this was down due to the vast number of variable parameters present and the values that needed to be assigned to them. After some experimentation with 4 layers and a longer training period, a new DBN started to show promising results although the training time was becoming unrealistic.
+
 \subsection{Unsupervised outlier detection}
 The unsupervised outlier detection achieved an AUC score of 0.60081 which shows an improvement over predicting all positives but not a significant one. 
 Certainly it does not perform as well as the tree ensemble methods.
@@ -432,6 +436,8 @@ The techniques which were tried are well suited to the specific problem, but bet
 One area which the team did not attempt to address was trip matching or road segment matching. Many drivers repeat the same trips or drive through the same roads. Identifying this would provide additional features which may hold some predictive power. Since the trips in the dataset are randomly rotated, trip matching is not a straight forward problem. One possible method would be to use the Ramer-Douglas-Peucker algorithm\cite{ramer1972iterative} for reducing the number of points on a curve an attempt to generate road segment features from these simplified trips.
 
 Another area for improvement would be better choice of bin boundaries for the histograms. The bin boundaries were largely chosen based upon intuition from looking at various histograms of trips and drivers. A more scientific approach would have possibly yielded better results.
+
+Additional work could include training a Convolutional Neural Network (CNN) on the raw $(x,y)$ data instead of the hand-picked features. This type of deep learning model learns from grid-based data such as images and time series data.
 
 
 \printbibliography
