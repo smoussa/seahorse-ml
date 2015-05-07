@@ -9,27 +9,22 @@
 import datetime
 import csv
 import os
-from concurrent.futures import ThreadPoolExecutor
 from multiprocessing import Pool
 import functools
 
 import numpy as np
-import scipy as sp
-from scipy.spatial.distance import euclidean as euclid
-# from scipy import stats as stats
-# import math
-# from sklearn.decomposition import PCA
-# from sklearn.cluster import KMeans
-# from sklearn.pipeline import Pipeline
-# from sklearn.preprocessing import StandardScaler
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 # from mpl_toolkits.mplot3d import Axes3D
 
-samples_dir_path = "sample_data/{}/"
-samples_path = samples_dir_path+"{}.csv"
-# samples_path = "../sample_data/{}/{}.csv"
+samples_dir_path = "drivers/{0}/"
+samples_path = samples_dir_path+"{1}.csv"
+data_output_path = "feature_data/distances/distance{0}.csv"
 features_header = ['total_dist', 'euclid_dist', 'long_trip', 'longest_strt', 'shortest_strt',
     'max_strt_spd', 'min_strt_spd']
+pool_size = 40
+
+def euclid(a, b):
+    return np.linalg.norm(a-b)
 
 def dist_features(data):
     data_dt = [np.diff(d, axis=0) for d in data]
@@ -39,10 +34,10 @@ def dist_features(data):
     median_total = np.median(total_dists)
     long_trip = [1 if d > median_total else 0 for d in total_dists]
     # straights = [straights_features(data[i], dists[i], plot=True) for i in range(len(data))]
-    # with ThreadPoolExecutor(max_workers=20) as e:
-    #     straights = list(e.map(f, range(len(data))))
-    pool = Pool(4)
+    pool = Pool(15)
     straights = list(pool.map(func, zip(data, dists)))
+    pool.close()
+    pool.join()
     return format(total_dists, start_end_dists, long_trip, straights)
 def func(data_dist):
     return straights_features(data_dist[0], data_dist[1])
@@ -128,32 +123,33 @@ def read_data(driver):
         if os.path.exists(path):
             yield np.genfromtxt(path, skip_header=1, delimiter=",")
         else:
-            print("Didn't find trip {} for {}".format(trip, driver))
+            print("Didn't find trip {0} for {1}".format(trip, driver))
 
-def read_all_data(drivers):
-    for driver in drivers:
-        if os.path.exists(samples_dir_path.format(driver)):
-            array = np.array(list(read_data(driver)))
-            if array.shape:
-                yield driver, array
-        else:
-            print("Skipping driver {}".format(driver))
+def read_driver_data(driver):
+    if os.path.exists(samples_dir_path.format(driver)):
+        array = np.array(list(read_data(driver)))
+        if array.shape:
+            return driver, array
+    else:
+        print("Skipping driver {0}".format(driver))
+        return None
 
-def generate_all_features(driver_data):
-    for i, d in driver_data:
-        print("Processing driver {}".format(i))
-        yield dist_features(d)
+def generate_all_features(driver):
+    driver_data = read_driver_data(driver)
+    if not driver_data:
+        return
+    i, d = driver_data
+    print("Processing driver {0}".format(i))
+    f = dist_features(d)
+    with open(data_output_path.format(i), 'w') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(features_header)
+        writer.writerows(f)
 
 def create_csv():
-    drivers = list(range(126, 127))
-    driver_data = list(read_all_data(drivers))
-    drivers = map(lambda x: x[0], driver_data)
-    features = list(generate_all_features(driver_data))
-    for driver, f in zip(drivers, features):
-        with open('feature_data/distances/distance'+str(driver)+'.csv', 'w') as csvfile:
-            writer = csv.writer(csvfile)
-            writer.writerow(features_header)
-            writer.writerows(f)
+    drivers = list(range(1600, 2000))
+    for d in drivers:
+        generate_all_features(d)
 
 if __name__ == '__main__':
     create_csv()

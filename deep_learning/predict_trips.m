@@ -2,7 +2,7 @@ close all
 clear all
 format long
 
-setup_paths;
+run setup_paths;
 
 %{
 	HOW TO RUN:
@@ -31,7 +31,7 @@ gcp = myCluster;
 
 for d = 120:130 % 3612
 
-	srcpath = ['feature_data/' num2str(d) '.csv'];
+	srcpath = ['joes_features_csv/' num2str(d) '.csv'];
     if exist(srcpath)
 
 		%{

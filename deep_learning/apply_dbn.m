@@ -1,13 +1,13 @@
 function [extremes] = apply_dbn(driver_num, dbn, opts)
 
 	% fetch driver data
-	src = ['./feature_data/' num2str(driver_num) '.csv']
-	raw = csvread(src,1,0);
+	src = ['./joes_features_csv/' num2str(driver_num) '.csv']
+	raw = csvread(src,0,0);
 	n = length(raw);
 
 	% apply pca
-	data = apply_pca(raw);
-	% data = raw;
+	% data = apply_pca(raw);
+	data = raw;
 
 	% normalise between 0 and 1 (for deep learning toolbox)
 	for i = 1:size(data,2)
