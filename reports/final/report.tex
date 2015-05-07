@@ -280,14 +280,14 @@ Features extracted from this data include data about the length of the straights
 \begin{figure}[h]
     \center
     \includegraphics[width=\linewidth]{img/speed_highlights.eps}
-    \caption{Points when the driver is stationary (black) and with low (red) and high (red) velocities.}
+    \caption{Points when the driver is stationary (black) and with low (yellow) and high (orange) velocities.}
     \label{fig:speedpoints}
 \end{figure}
 
 % more on distance-related features
 
 A subset of the full set of features (Appendix X) corresponds to distance, speed and time related attributes of trips.
-A randomly sampled trip from the dataset is plotted in figure \ref{fig:speedpoints} with coloured points indicating areas of stationary periods (black) and low (yellow) and high (red) velocities.
+A randomly sampled trip from the dataset is plotted in figure \ref{fig:speedpoints} with coloured points indicating areas of stationary periods (black) and low (yellow) and high (orange) velocities.
 The thresholds determining ``high" and ``low" velocities were manually configured to best represent the natural motion of a driver along a trip.
 
 % more on speed and time related features
@@ -413,6 +413,14 @@ The unsupervised outlier detection achieved an AUC score of 0.60081 which shows 
 Certainly it does not perform as well as the tree ensemble methods.
 
 \section{Conclusion}
+This was a difficult problem that with noisy data that hampered progress slightly.
+It required careful thought to single out features that would allow uniquely identifying a driver.
+Apart from deciding on those, preprocessing and generating all of them takes a long time.
+The chosen features were used with various machine learning techniques, from deep neural networks to classic SVM to random forest classifiers, with varying success.
+The random forest with 500 estimators preformed the best achieving a score of 0.80542 on Kaggle.
+This is a decent score placing the team in the top third of the leaderboard, but compared to the highest result (0.97984) there is still much room for improvement.
+The techniques which were tried are well suited to the specific problem, but better features through preprocessing would likely be required to improve the score. 
+
 
 \subsection{Further Work}
 
