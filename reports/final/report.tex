@@ -98,17 +98,7 @@ The features may be extracted manually using prior knowledge of the problem doma
 Since the dataset is very large, it was expected to take a fairly long time to perform preprocessing and learn a model.
 To overcome this, some parallelisation work was required, utilising the university's available computing power.
 Finally, the data included some degree of noise and missing values due to the inaccuracies associated with GPS readings.
-Although little feedback was expected to be given from our models in terms of validating the accuracy of our predictions, a submission to the Kaggle competition did present us with an overall score, although this did not give us information of any use to improve our models.
-
-
-
-
-\subsection{Variant Approaches}
-
-
-
-
-
+Another challenge is that the dataset gathered was unlabelled. This meant that any validation performed by the team would be inexact, however an exact accuracy could be made by submitting to kaggle.
 
 % section
 \section{Analysis \& Experimentation}
@@ -123,8 +113,6 @@ Since the raw data is unstructured and does not provide useful, or in fact any d
 The trips were merely composed of sequences of GPS coordinates taken at one-second intervals.
 The data had to be processed and features were to be designed before machine learning techniques could be applied to make predictions.
 In addition the GPS coordinates given in the data were subject to inaccuracy.
-
-The extracted features contained $N_F$ continuous variables and can be summarised by the list in appendix X.
 
 
 \subsection{Data Smoothing}
@@ -178,8 +166,8 @@ Algorithm \ref{alg:corners} shows the procedure used for identifying corners.
 $C$ is a set of corners which is iteratively added to.
 Vector $\mathbf{v^{(i)}}$ refers to the $ith$ velocity in a trip.
 The algorithm cycles through the velocity vectors keeping a cumulative sum of distance.
-If the cumulative distance exceeds a certain value or the angle between the initial velocity and the current velocity is no longer increasing, a check is then made to see if the angle between the current velocity and the initial velocity is above some threshold.
-If it is a corner has been identified and the process is repeated from after the corner.
+If the cumulative distance (denoted by $d_\text{curr}$) exceeds a certain value (denoted by $d_\text{thresh}$) or the angle between the initial velocity and the current velocity is no longer increasing, a check is then made to see if the angle between the current velocity and the initial velocity (denoted by $c_\text{curr}$) is above some threshold (denoted by $c_\text{thresh}$).
+If $c_\text{curr}$ is above the threshold, $c_\text{thresh}$, then corner has been identified and the process is repeated from after the corner.
 Otherwise the process is repeated again from one place in front of the start of the current search.
 
 
