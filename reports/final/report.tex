@@ -294,7 +294,7 @@ This technique also afforded the use of rudimentary validation. One could test t
 Gradient boosting is a technique for combining many weak learning machines into a single machine which achieves better performance. First outlined by Freidman \cite{friedman2001greedy} this proved to be one of the more successful techniques for making predictions based upon the data. The particular machine used by this team was provided by the scikit-learn library and 100 boosting stages were used.
 
 \subsubsection{Random Forests}
-Random Forests are another ensemble learning machine. They train many different decision trees on different parts of the data. These trees are then averaged. The motivation behind this technique is that decision trees often have low bias but high variance meaning they often overfit the data. It is hoped that the averaging reduces the variance with only a low cost to bias.
+Random Forests are another ensemble learning machines. They train many different decision trees on different parts of the data. These trees are then averaged. The motivation behind this technique is that decision trees often have low bias but high variance meaning they often overfit the data. It is hoped that the averaging reduces the variance with only a low cost to bias.
 
 
 \subsubsection{Support Vector Machines}
@@ -429,7 +429,7 @@ The techniques which were tried are well suited to the specific problem, but bet
 
 
 \subsection{Further Work}
-One area which the team did not attempt to address was trip matching or road segment matching. Many drivers repeat the same trips or drive through the same roads. Identifying this would provide additional features which may hold some predictive power. Since the trips in the dataset are randomly rotated, trip matching is not a straight forward problem. One possible method would be to use the Ramer-Douglas-Peucker algorithm\cite{ramer1972iterative} for reducing the number of points on a curve an attempt to generate road segment features from these simplified trips.
+One area which the team did not attempt to address is trip matching and road segment matching. Many drivers repeat the same trips or drive through the same roads. Identifying this would provide additional features which may hold some predictive power. Since the trips in the dataset are randomly rotated, trip matching is not a straight forward problem. One possible method would be to use the Ramer-Douglas-Peucker algorithm\cite{ramer1972iterative} for reducing the number of points on a curve an attempt to generate road segment features from these simplified trips.
 
 Another area for improvement would be better choice of bin boundaries for the histograms. The bin boundaries were largely chosen based upon intuition from looking at various histograms of trips and drivers. A more scientific approach would have possibly yielded better results.
 
