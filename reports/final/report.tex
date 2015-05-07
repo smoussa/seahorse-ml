@@ -291,14 +291,14 @@ This technique also afforded the use of rudimentary validation. One could test t
 
 
 \subsubsection{Gradient Boosting Trees}
-Gradient boosting is a technique for combining many weak learning machines into a single machine which achieves better performance. First outlined by Freidman \cite{friedman2001greedy} this proved to be one of the more successful techniques for making predictions based upon the data. The particular machine used by this team was provided by the scikit-learn library and 50 boosting stages were used.
+Gradient boosting is a technique for combining many weak learning machines into a single machine which achieves better performance. First outlined by Freidman \cite{friedman2001greedy} this proved to be one of the more successful techniques for making predictions based upon the data. The particular machine used by this team was provided by the scikit-learn library and 100 boosting stages were used.
 
 \subsubsection{Random Forests}
 Random Forests are another ensemble learning machine. They train many different decision trees on different parts of the data. These trees are then averaged. The motivation behind this technique is that decision trees often have low bias but high variance meaning they often overfit the data. It is hoped that the averaging reduces the variance with only a low cost to bias.
 
 
 \subsubsection{Support Vector Machines}
-The Support Vector Machine (SVM) is a maximal margin classifier first outlined by Vapnik and Cortes\cite{cortes1995support}. It also allows classification of problems which aren't linearly separable through use of kernel functions. The implementation used was the scikit-learn implementation which is base on libsvm.
+The Support Vector Machine (SVM) is a maximal margin classifier first outlined by Vapnik and Cortes\cite{cortes1995support}. It also allows classification of problems which aren't linearly separable through use of kernel functions. The implementation used was the scikit-learn implementation which is based on libsvm.
 
 To use SVMs the data was first reduced in dimensionality through use of principle components analysis to 20 dimensions.
 
