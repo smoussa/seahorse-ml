@@ -314,6 +314,8 @@ Gradient boosting is a technique for combining many weak learning machines into 
 Random Forests are another ensemble learning machine. They train many different decision trees on different parts of the data. These trees are then averaged. The motivation behind this technique is that decision trees often have low bias but high variance meaning they often overfit the data. It is hoped that the averaging reduces the variance with only a low cost to bias.
 
 
+\subsection{Support Vector Machines}
+
 \subsubsection{Deep Learning}
 
 While many of the common approaches have demonstrated sufficient performance tackling, machine learning, statistical and prediction-based problems, more recent but advanced methods in the field of \textit{deep learning} have attracted much attention due to their vastly clever architectures and training algorithms.
@@ -374,7 +376,7 @@ Output & 1\\ \hline
 
 
 \subsection{Validation}
-
+The score given to a classifier is the area under curver (AUC) of the ROC curve. This provides a score of between one and zero. One being a perfect score.
 
 \subsection{Large Scale Implementation}
 
@@ -384,6 +386,16 @@ Thus, in order train our models in reasonable time, only a small sample of 200 d
 
 
 % section
+\section{Results}
+Random forests provided good results and a relatively quick training time. The plot shown in figure \ref{fig:rfperf} shows how the number of estimators used in the random forest affected the score. One can observe that increasing the number of estimators generally increased the AUC score of the classifier although these returns appeared to dwindle after the number of estimators reached around 120.
+
+\begin{figure}[h]
+    \center
+    \includegraphics[width=\linewidth]{img/rfperf}
+    \caption{Plot showing th number of estimators in a random forest against AUC score}
+    \label{fig:rfperf}
+\end{figure}
+
 \section{Conclusion}
 
 \subsection{Further Work}
