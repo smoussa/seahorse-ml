@@ -369,10 +369,8 @@ The score given to a classifier is the area under curve (AUC) of the ROC curve. 
 \subsection{Large Scale Implementation}
 
 Processing large amounts of data presented many issues and we found the frequency of feedback hindered by the scale of the dataset.
-Thus, in order train our models in reasonable time, only a small sample of 200 drivers was used.
 
-\subsubsection{Supervised Learning Models}
-Since ten models needed to be trained per driver, the computational expense of running the supervised models was very high. Especially since there are in excess of 2700 drivers. In an attempt to remedy this the team used the university's computing structure which included machines with 64 CPU cores. Through use of Python's multiprocessing module. This allowed the task to be parallelized and shared amongst many cores, massively increasing the speed at which the models could be run.
+Since ten models needed to be trained per driver, for the supervised learning approach, the computational expense of running the supervised models was very high. Especially since there are in excess of 2700 drivers. In an attempt to remedy this the team used the university's computing structure which included machines with 64 CPU cores. Through use of Python's multiprocessing module. This allowed the task to be parallelized and shared amongst many cores, massively increasing the speed at which the models could be run.
 
 
 
