@@ -11,7 +11,7 @@ disp('Extracting all driver trips ...');
 
 tstart = tic;
 missing = 0;
-parfor d = 120:130
+parfor d = 1:3612
     
     srcpath =  ['drivers/' num2str(d)];
     if exist(srcpath)
