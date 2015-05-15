@@ -9,17 +9,17 @@ function view_trips(driver_num, trips, highlight)
 
 			[data, fast, slow, stationary] = extract_features(driver_num, trip);
 
-			subplot(ceil(length(trips)/2), 2, t);
+			% subplot(ceil(length(trips)/2), 2, t);
 			hold on;
-			plot(data(:,1), data(:,2))
+			plot(data(:,1), data(:,2), 'LineSmoothing','on')
 			title(['Driver ' num2str(driver_num) ' ~ Trip ' num2str(trip)]);
 			xlabel('X');
 			ylabel('Y');
 
 			% highlight significant speeds (or slow speeds) on trip path
-			plot(data(fast,1), data(fast,2), 'o');
-			plot(data(slow,1), data(slow,2), 'o');
-			plot(data(stationary,1), data(stationary,2), 'ko');
+			plot(data(fast,1), data(fast,2), 'o','color',[1 .5 0],  'LineSmoothing','on');
+			plot(data(slow,1), data(slow,2), 'yo','LineSmoothing','on');
+			plot(data(stationary,1), data(stationary,2), 'ko', 'LineSmoothing','on');
 			hold off;
 		end
 

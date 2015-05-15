@@ -1,4 +1,4 @@
-\documentclass[a4paper, 11pt, twocolumn]{report}
+\documentclass[a4paper, 11pt, twocolumn]{article}
 \usepackage[
 	backend=biber,
 	natbib=true,
@@ -51,15 +51,9 @@ We found that ensemble tree-based methods and deep belief networks performed fai
 
 \end{abstract}
 
+
 % section
 \section{Introduction}
-
-
-
-
-
-% section
-\section{Problem Scenario}
 
 The task detailed in this report is to use telematic data to identify driver signatures.
 This problem was initially released as a challenge available to members of the machine learning community provided by Kaggle\footnote{kaggle.com/c/axa-driver-telematics-analysis} and supported by multinational insurance company AXA.
@@ -81,7 +75,7 @@ The size of the entire dataset is just over half a terabyte with exactly 547,200
 
 \begin{figure}[h]
     \center
-    \includegraphics[width=\linewidth]{img/sample_driver_vis}
+    \includegraphics[width=\linewidth]{img/sample_driver_vis.eps}
     \caption{Typical illustration of trips for a driver.}
     \label{fig:tripsgraph}
 \end{figure}
@@ -98,17 +92,7 @@ The features may be extracted manually using prior knowledge of the problem doma
 Since the dataset is very large, it was expected to take a fairly long time to perform preprocessing and learn a model.
 To overcome this, some parallelisation work was required, utilising the university's available computing power.
 Finally, the data included some degree of noise and missing values due to the inaccuracies associated with GPS readings.
-Although little feedback was expected to be given from our models in terms of validating the accuracy of our predictions, a submission to the Kaggle competition did present us with an overall score, although this did not give us information of any use to improve our models.
-
-
-
-
-\subsection{Variant Approaches}
-
-
-
-
-
+Another challenge is that the dataset gathered was unlabelled. This meant that any validation performed by the team would be inexact, however an exact accuracy could be made by submitting to kaggle.
 
 % section
 \section{Analysis \& Experimentation}
@@ -123,8 +107,6 @@ Since the raw data is unstructured and does not provide useful, or in fact any d
 The trips were merely composed of sequences of GPS coordinates taken at one-second intervals.
 The data had to be processed and features were to be designed before machine learning techniques could be applied to make predictions.
 In addition the GPS coordinates given in the data were subject to inaccuracy.
-
-The extracted features contained $N_F$ continuous variables and can be summarised by the list in appendix X.
 
 
 \subsection{Data Smoothing}
@@ -178,8 +160,8 @@ Algorithm \ref{alg:corners} shows the procedure used for identifying corners.
 $C$ is a set of corners which is iteratively added to.
 Vector $\mathbf{v^{(i)}}$ refers to the $ith$ velocity in a trip.
 The algorithm cycles through the velocity vectors keeping a cumulative sum of distance.
-If the cumulative distance exceeds a certain value or the angle between the initial velocity and the current velocity is no longer increasing, a check is then made to see if the angle between the current velocity and the initial velocity is above some threshold.
-If it is a corner has been identified and the process is repeated from after the corner.
+If the cumulative distance (denoted by $d_\text{curr}$) exceeds a certain value (denoted by $d_\text{thresh}$) or the angle between the initial velocity and the current velocity is no longer increasing, a check is then made to see if the angle between the current velocity and the initial velocity (denoted by $c_\text{curr}$) is above some threshold (denoted by $c_\text{thresh}$).
+If $c_\text{curr}$ is above the threshold, $c_\text{thresh}$, then corner has been identified and the process is repeated from after the corner.
 Otherwise the process is repeated again from one place in front of the start of the current search.
 
 
@@ -240,6 +222,7 @@ The euclidean distance between the start and end section is calculated by subtra
 The absolute difference of these two values is then compared to the threshold.
 The threshold is the maximum percentage of the distance travelled that the straight can vary by, this allows longer slightly curved roads to be counted.
 If the straight is within the threshold and the above the minimum length then the straight is added to a map indexed by the start index and storing the end index along with the length of the straight.
+Figure \ref{fig:straights} shows an example of the straight sections that are identified with this algorithm for a specific route.
 
 Features extracted from this data include data about the length of the straights and the speeds at which the user drove along them.
 
@@ -278,15 +261,15 @@ Features extracted from this data include data about the length of the straights
 
 \begin{figure}[h]
     \center
-    \includegraphics[width=\linewidth]{img/speed_highlights}
-    \caption{Points when the driver is stationary (black) and with low (red) and high (red) velocities.}
+    \includegraphics[width=\linewidth]{img/speed_highlights.eps}
+    \caption{Points when the driver is stationary (black) and with low (yellow) and high (orange) velocities.}
     \label{fig:speedpoints}
 \end{figure}
 
 % more on distance-related features
 
 A subset of the full set of features (Appendix X) corresponds to distance, speed and time related attributes of trips.
-A randomly sampled trip from the dataset is plotted in figure \ref{fig:speedpoints} with coloured points indicating areas of stationary periods (black) and low (yellow) and high (red) velocities.
+A randomly sampled trip from the dataset is plotted in figure \ref{fig:speedpoints} with coloured points indicating areas of stationary periods (black) and low (yellow) and high (orange) velocities.
 The thresholds determining ``high" and ``low" velocities were manually configured to best represent the natural motion of a driver along a trip.
 
 % more on speed and time related features
@@ -308,11 +291,18 @@ This technique also afforded the use of rudimentary validation. One could test t
 
 
 \subsubsection{Gradient Boosting Trees}
-Gradient boosting is a technique for combining many weak learning machines into a single machine which achieves better performance. First outlined by Freidman \cite{friedman2001greedy} this proved to be one of the more successful techniques for making predictions based upon the data. The particular machine used by this team was provided by the scikit-learn library and 50 boosting stages were used.
+Gradient boosting is a technique for combining many weak learning machines into a single machine which achieves better performance. First outlined by Freidman \cite{friedman2001greedy} this proved to be one of the more successful techniques for making predictions based upon the data. The particular machine used by this team was provided by the scikit-learn library and 100 boosting stages were used.
 
 \subsubsection{Random Forests}
-Random Forests are another ensemble learning machine. They train many different decision trees on different parts of the data. These trees are then averaged. The motivation behind this technique is that decision trees often have low bias but high variance meaning they often overfit the data. It is hoped that the averaging reduces the variance with only a low cost to bias.
+Random Forests are another ensemble learning machines. They train many different decision trees on different parts of the data. These trees are then averaged. The motivation behind this technique is that decision trees often have low bias but high variance meaning they often overfit the data. It is hoped that the averaging reduces the variance with only a low cost to bias.
 
+
+\subsubsection{Support Vector Machines}
+The Support Vector Machine (SVM) is a maximal margin classifier first outlined by Vapnik and Cortes\cite{cortes1995support}. It also allows classification of problems which aren't linearly separable through use of kernel functions. The implementation used was the scikit-learn implementation which is based on libsvm.
+
+To use SVMs the data was first reduced in dimensionality through use of principle components analysis to 20 dimensions.
+
+This was used as an alternative to deep learning and tree based ensemble methods to see how it compares for this particular problem domain.
 
 \subsubsection{Deep Learning}
 
@@ -374,39 +364,79 @@ Output & 1\\ \hline
 
 
 \subsection{Validation}
-
+The score given to a classifier is the area under curve (AUC) of the ROC curve. This provides a score of between one and zero. One being a perfect score. Predicting all positives would result in a score of 0.5.
 
 \subsection{Large Scale Implementation}
 
 Processing large amounts of data presented many issues and we found the frequency of feedback hindered by the scale of the dataset.
-Thus, in order train our models in reasonable time, only a small sample of 200 drivers was used.
+
+Since ten models needed to be trained per driver, for the supervised learning approach, the computational expense of running the supervised models was very high. Especially since there are in excess of 2700 drivers. In an attempt to remedy this the team used the university's computing structure which included machines with 64 CPU cores. Through use of Python's multiprocessing module. This allowed the task to be parallelized and shared amongst many cores, massively increasing the speed at which the models could be run.
 
 
 
 % section
+\section{Results}
+\subsection{Random Forests}
+Random forests provided good results and a relatively quick training time. 
+The plot shown in figure \ref{fig:rfperf} shows how the number of estimators used in the random forest affected the score. 
+One can observe that increasing the number of estimators generally increased the AUC score of the classifier although these returns appeared to dwindle after the number of estimators reached around 120.
+
+\begin{figure}[h]
+    \center
+    \includegraphics[width=\linewidth]{img/rfperf}
+    \caption{Plot showing the number of estimators in a random forest against AUC score}
+    \label{fig:rfperf}
+\end{figure}
+
+\subsection{Gradient Boosting Classifier}
+The gradient boosting classifiers resulted in good AUC scores, providing roughly comparable prediction performance to Random Forests. The plot shown in figure \ref{fig:gbperf} shows how the learning rate affects prediction performance. It shows that increasing the learning rate slightly increases the performance until the learning rate is 0.5 before the score starts to decrease.
+
+\begin{figure}[h]
+    \center
+    \includegraphics[width=\linewidth]{img/gbperf}
+    \caption{Plot showing gradient boosting learning rate against AUC score}
+    \label{fig:gbperf}
+\end{figure}
+
+\subsection{Support Vector Machines}
+SVMs performed fairly poorly on this particular problem. Table \ref{tab:svm} shows how SVMs performed with different kernel functions. One can see that they barely performed better than predicting all positives. Perhaps it was because the kernel functions used did not translate the input vectors into a vector space where the data is linearly separable. The team wasn't able to use linear or polynomial kernels as the training time was very high and the number of machines that needed to be trained was very large.
+\begin{table}[h]
+    \center
+    \begin{tabular}{| l | l |}
+        \hline
+        Kernel Function & AUC Score \\ \hline
+        Radial Basis Function & 0.50797 \\ \hline
+        Sigmoid & 0.5 \\ \hline
+    \end{tabular}
+    \caption{SVM kernel functions and their scores}
+    \label{tab:svm}
+\end{table}
+
+\subsection{Deep Learning}
+
+The deep belief network predictions did not demonstrate great performance and the submission returned a classification accuracy of 58\%. However, this was down due to the vast number of variable parameters present and the values that needed to be assigned to them. After some experimentation with 4 layers and a longer training period, a new DBN started to show promising results although the training time was becoming unrealistic.
+
+\subsection{Unsupervised outlier detection}
+The unsupervised outlier detection achieved an AUC score of 0.60081 which shows an improvement over predicting all positives but not a significant one. 
+Certainly it does not perform as well as the tree ensemble methods.
+
 \section{Conclusion}
+This was a difficult problem that with noisy data that hampered progress slightly.
+It required careful thought to single out features that would allow uniquely identifying a driver.
+Apart from deciding on those, preprocessing and generating all of them takes a long time.
+The chosen features were used with various machine learning techniques, from deep neural networks to classic SVM to random forest classifiers, with varying success.
+The random forest with 500 estimators preformed the best achieving a score of 0.80542 on Kaggle.
+This is a decent score placing the team in the top third of the leaderboard, but compared to the highest result (0.97984) there is still much room for improvement.
+The techniques which were tried are well suited to the specific problem, but better features through preprocessing would likely be required to improve the score. 
+
 
 \subsection{Further Work}
+One area which the team did not attempt to address is trip matching and road segment matching. Many drivers repeat the same trips or drive through the same roads. Identifying this would provide additional features which may hold some predictive power. Since the trips in the dataset are randomly rotated, trip matching is not a straight forward problem. One possible method would be to use the Ramer-Douglas-Peucker algorithm\cite{ramer1972iterative} for reducing the number of points on a curve an attempt to generate road segment features from these simplified trips.
 
+Another area for improvement would be better choice of bin boundaries for the histograms. The bin boundaries were largely chosen based upon intuition from looking at various histograms of trips and drivers. A more scientific approach would have possibly yielded better results.
 
+Additional work could include training a Convolutional Neural Network (CNN) on the raw $(x,y)$ data instead of the hand-picked features. This type of deep learning model learns from grid-based data such as images and time series data.
 
-
-
-
-
-
-
-
-\begin{appendices}
-
-\chapter{Features}
-
-\begin{itemize} \itemsep0.5pt \parskip0pt \parsep0pt \ttfamily \small \bfseries
-  \item[] first item
-  \item[] second item
-\end{itemize}
-
-\end{appendices}
 
 \printbibliography
 \end{document}
