@@ -1,7 +1,7 @@
 function [extremes] = apply_dbn(driver_num, dbn, opts)
 
 	% fetch driver data
-	src = ['./joes_features_csv/' num2str(driver_num) '.csv']
+	src = ['./joes_features_csv/' num2str(driver_num) '.csv'];
 	raw = csvread(src,0,0);
 	n = length(raw);
 
@@ -32,14 +32,14 @@ function [extremes] = apply_dbn(driver_num, dbn, opts)
 	nn.activation_function = 'sigm';
 
 	% train nn
-	nn = nntrain(nn, train_x, ones(length(train_x), 1), opts);
+	nn = nntrain(nn, train_x, ones(size(train_x,1), 1), opts);
 
 	% predict
-	probs = nnpredict(nn, train_x);
-	norm_trips = abs((probs - mean(probs)) / std(probs));
+	prob = nnpredict(nn, train_x)
+	% norm_trips = abs((prob - mean(prob)) / std(prob));
 
 	% find trips more than 1 standard deviation away from mean
-	num_extremes = length(find(norm_trips > 1));
-	extremes = find(norm_trips > 1);
+	% num_extremes = length(find(norm_trips > 1));
+	% extremes = find(norm_trips > 1);
 
 end
